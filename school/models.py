@@ -47,3 +47,30 @@ class Subscription(models.Model):
     end_date = models.DateField()
     lessons_left = models.IntegerField()
     is_active = models.BooleanField(default=False)
+
+
+class Lesson(models.Model):
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+    )
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+    )
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+    )
+    plan = models.ForeignKey(
+        SubscriptionPlan,
+        on_delete=models.CASCADE,
+        related_name="lessons",
+    )
+    start_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField()
+    status = models.CharField(max_length=55)
+    notes = models.TextField()
