@@ -1,8 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 
 
-class Teacher(AbstractBaseUser):
+class Teacher(AbstractUser):
     telegram_id = models.CharField(max_length=55, null=True, unique=True)
     phone_number = models.CharField(max_length=12, unique=True)
     description = models.TextField(null=True)
