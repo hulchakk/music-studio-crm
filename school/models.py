@@ -7,11 +7,21 @@ class Teacher(AbstractBaseUser):
     phone_number = models.CharField(max_length=12)
     description = models.TextField(null=True)
 
+
 class Student(models.Model):
     first_name = models.CharField(max_length=55)
     last_name = models.CharField(max_length=55)
     description = models.TextField(null=True)
 
+
 class Room(models.Model):
     name = models.CharField(max_length=55)
     description = models.TextField(null=True)
+
+
+class SubscriptionPlan(models.Model):
+    name = models.CharField(max_length=255)
+    lessons_count = models.IntegerField()
+    lessons_duration = models.IntegerField()
+    price = models.IntegerField()
+    validity_days = models.IntegerField()
