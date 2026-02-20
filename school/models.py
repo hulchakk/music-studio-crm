@@ -3,20 +3,29 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Teacher(AbstractUser):
-    telegram_id = models.CharField(max_length=55, null=True, unique=True)
+    telegram_id = models.CharField(max_length=55, null=True, unique=True, blank=True)
     phone_number = models.CharField(max_length=12, unique=True)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Student(models.Model):
     first_name = models.CharField(max_length=55)
     last_name = models.CharField(max_length=55)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
 
 
 class Room(models.Model):
     name = models.CharField(max_length=55, unique=True)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} {self.description[:10]}..."
 
 
 class SubscriptionPlan(models.Model):
@@ -25,6 +34,9 @@ class SubscriptionPlan(models.Model):
     lessons_duration = models.IntegerField()
     price = models.IntegerField()
     validity_days = models.IntegerField()
+
+    def __str__(self):
+        return self.name
 
 
 class Subscription(models.Model):
@@ -73,4 +85,4 @@ class Lesson(models.Model):
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     status = models.CharField(max_length=55)
-    notes = models.TextField()
+    notes = models.TextField(null=True, blank=True)
