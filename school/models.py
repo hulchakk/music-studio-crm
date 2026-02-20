@@ -3,8 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser
 
 
 class Teacher(AbstractBaseUser):
-    telegram_id = models.CharField(max_length=55, null=True)
-    phone_number = models.CharField(max_length=12)
+    telegram_id = models.CharField(max_length=55, null=True, unique=True)
+    phone_number = models.CharField(max_length=12, unique=True)
     description = models.TextField(null=True)
 
 
@@ -15,13 +15,35 @@ class Student(models.Model):
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=55)
+    name = models.CharField(max_length=55, unique=True)
     description = models.TextField(null=True)
 
 
 class SubscriptionPlan(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     lessons_count = models.IntegerField()
     lessons_duration = models.IntegerField()
     price = models.IntegerField()
     validity_days = models.IntegerField()
+
+
+class Subscription(models.Model):
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+    )
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+    )
+    plan = models.ForeignKey(
+        SubscriptionPlan,
+        on_delete=models.CASCADE,
+        related_name="subscriptions",
+    )
+    start_date = models.DateField(auto_now_add=True)
+    end_date = models.DateField()
+    lessons_left = models.IntegerField()
+    is_active = models.BooleanField(default=False)
