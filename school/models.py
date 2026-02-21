@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -55,10 +56,21 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name="subscriptions",
     )
-    start_date = models.DateField(auto_now_add=True)
-    end_date = models.DateField()
-    lessons_left = models.IntegerField()
+    start_date = models.DateField()
+    end_date = models.DateField(
+        null=True,
+        blank=True,
+    )
+    lessons_left = models.IntegerField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.end_date:
+            start = self.start_date
+            self.end_date = start + datetime.timedelta(days=self.plan.validity_days)
+        if not self.lessons_left:
+            self.lessons_left = self.plan.lessons_count
+        super().save(*args, **kwargs)
 
 
 class Lesson(models.Model):
@@ -83,6 +95,15 @@ class Lesson(models.Model):
         related_name="lessons",
     )
     start_datetime = models.DateTimeField()
-    end_datetime = models.DateTimeField()
+    end_datetime = models.DateTimeField(
+        blank=True,
+        null=True,
+    )
     status = models.CharField(max_length=55)
     notes = models.TextField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if not self.end_datetime:
+            start_time = self.start_datetime
+            self.end_datetime = start_time + datetime.timedelta(minutes=self.plan.lessons_duration)
+        super().save(*args, **kwargs)
