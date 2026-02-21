@@ -38,6 +38,8 @@ class TeacherAdmin(UserAdmin):
                 "Additional info",
                 {
                     "fields": (
+                        "first_name",
+                        "last_name",
                         "telegram_id",
                         "phone_number",
                         "description",
@@ -90,6 +92,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
     list_display = (
+        "pk",
         "student",
         "teacher",
         "room",
