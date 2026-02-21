@@ -1,14 +1,27 @@
 import datetime
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, UniqueConstraint
 from django.contrib.auth.models import AbstractUser
 from django.forms import ValidationError
 
 
 class Teacher(AbstractUser):
-    telegram_id = models.CharField(max_length=55, null=True, unique=True, blank=True)
+    telegram_id = models.CharField(
+        max_length=55,
+        null=True,
+        unique=True,
+        blank=True
+    )
     phone_number = models.CharField(max_length=12, unique=True)
     description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["first_name", "last_name"],
+                name="unique_teacher_constraint",
+            )
+        ]
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
@@ -19,12 +32,20 @@ class Student(models.Model):
     last_name = models.CharField(max_length=55)
     description = models.TextField(null=True, blank=True)
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["first_name", "last_name"],
+                name="unique_student_constraint",
+            )
+        ]
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=55, unique=True)
+    name = models.CharField(max_length=55)
     description = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -69,7 +90,9 @@ class Subscription(models.Model):
     def save(self, *args, **kwargs):
         if not self.end_date:
             start = self.start_date
-            self.end_date = start + datetime.timedelta(days=self.plan.validity_days)
+            self.end_date = start + datetime.timedelta(
+                days=self.plan.validity_days
+            )
         if not self.lessons_left:
             self.lessons_left = self.plan.lessons_count
         super().save(*args, **kwargs)
@@ -107,29 +130,45 @@ class Lesson(models.Model):
     status = models.CharField(max_length=55)
     notes = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ("start_datetime", )
+
     def clean(self):
         if self.start_datetime and self.end_datetime:
             if not self.start_datetime < self.end_datetime:
-                raise ValidationError(f"End time must be later than start time")
+                raise ValidationError(
+                    "End time must be later than start time"
+                )
             overlapping_lessons = Lesson.objects.filter(
-                Q(start_datetime__lt=self.end_datetime) & 
+                Q(start_datetime__lt=self.end_datetime) &
                 Q(end_datetime__gt=self.start_datetime)
             )
         if self.pk:
             overlapping_lessons = overlapping_lessons.exclude(pk=self.pk)
             if overlapping_lessons.filter(room=self.room).exists():
-                raise ValidationError(f"Room '{self.room}' is alredy booked for thi time")
+                raise ValidationError(
+                    f"Room '{self.room}' is alredy booked for thi time"
+                )
             if overlapping_lessons.filter(student=self.student).exists():
-                raise ValidationError(f"Student {self.student} alredy have a lesson during this time")
+                raise ValidationError(
+                    f"Student {self.student} "
+                    "alredy have a lesson during this time"
+                )
             if overlapping_lessons.filter(teacher=self.teacher).exists():
-                raise ValidationError(f"Teacher {self.teacher} alredy have a lesson during this time")
+                raise ValidationError(
+                    f"Teacher {self.teacher} "
+                    "alredy have a lesson during this time"
+                )
 
     def save(self, *args, **kwargs):
         if not self.end_datetime:
             start_time = self.start_datetime
-            self.end_datetime = start_time + datetime.timedelta(minutes=self.plan.lessons_duration)
+            self.end_datetime = start_time + datetime.timedelta(
+                minutes=self.plan.lessons_duration
+            )
         self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.student} ({self.teacher}) - {self.start_datetime.strftime("%d.%m - %H:%M")}"
+        start_time = self.start_datetime.strftime("%d.%m - %H:%M")
+        return f"{self.student} ({self.teacher}) - {start_time}"
