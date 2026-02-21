@@ -72,6 +72,9 @@ class Subscription(models.Model):
             self.lessons_left = self.plan.lessons_count
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return f"{self.student} - {self.plan}"
+
 
 class Lesson(models.Model):
     student = models.ForeignKey(
@@ -107,3 +110,6 @@ class Lesson(models.Model):
             start_time = self.start_datetime
             self.end_datetime = start_time + datetime.timedelta(minutes=self.plan.lessons_duration)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.student} ({self.teacher}) - {self.start_datetime.strftime("%d.%m - %H:%M")}"
