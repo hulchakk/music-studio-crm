@@ -48,6 +48,14 @@ class Room(models.Model):
     name = models.CharField(max_length=55)
     description = models.TextField(null=True, blank=True)
 
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["name", "description"],
+                name="unique_room_constraint",
+            )
+        ]
+
     def __str__(self):
         return f"{self.name} {self.description[:10]}..."
 
