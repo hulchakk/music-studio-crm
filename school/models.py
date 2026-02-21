@@ -136,38 +136,37 @@ class Lesson(models.Model):
     def clean(self):
         if self.subscription.lessons_left == 0:
             raise ValidationError("No lessons left in this subscription")
-        if self.start_datetime and self.end_datetime:
-            if not self.start_datetime < self.end_datetime:
-                raise ValidationError(
-                    "End time must be later than start time"
-                )
-            overlapping_lessons = Lesson.objects.filter(
-                Q(start_datetime__lt=self.end_datetime) &
-                Q(end_datetime__gt=self.start_datetime)
-            )
-        if self.pk:
-            overlapping_lessons = overlapping_lessons.exclude(pk=self.pk)
-            if overlapping_lessons.filter(room=self.room).exists():
-                raise ValidationError(
-                    f"Room '{self.room}' is alredy booked for thi time"
-                )
-            if overlapping_lessons.filter(student=self.student).exists():
-                raise ValidationError(
-                    f"Student {self.student} "
-                    "alredy have a lesson during this time"
-                )
-            if overlapping_lessons.filter(teacher=self.teacher).exists():
-                raise ValidationError(
-                    f"Teacher {self.teacher} "
-                    "alredy have a lesson during this time"
-                )
-
-    def save(self, *args, **kwargs):
         if not self.end_datetime:
             start_time = self.start_datetime
             self.end_datetime = start_time + datetime.timedelta(
                 minutes=self.subscription.plan.lessons_duration
             )
+        if not self.start_datetime < self.end_datetime:
+            raise ValidationError(
+                "End time must be later than start time"
+            )
+        overlapping_lessons = Lesson.objects.filter(
+                Q(start_datetime__lt=self.end_datetime) &
+                Q(end_datetime__gt=self.start_datetime)
+            )
+        if self.pk:
+            overlapping_lessons = overlapping_lessons.exclude(pk=self.pk)
+        if overlapping_lessons.filter(room=self.room).exists():
+            raise ValidationError(
+                f"Room '{self.room}' is alredy booked for thi time"
+            )
+        if overlapping_lessons.filter(student=self.student).exists():
+            raise ValidationError(
+                f"Student {self.student} "
+                "alredy have a lesson during this time"
+            )
+        if overlapping_lessons.filter(teacher=self.teacher).exists():
+            raise ValidationError(
+                f"Teacher {self.teacher} "
+                "alredy have a lesson during this time"
+            )
+
+    def save(self, *args, **kwargs):
         self.full_clean()
         if not self.pk:
             if self.subscription.lessons_left > 0:
