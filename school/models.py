@@ -85,7 +85,7 @@ class Subscription(models.Model):
         blank=True,
     )
     lessons_left = models.IntegerField(null=True, blank=True)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -93,7 +93,7 @@ class Subscription(models.Model):
             self.end_date = start + datetime.timedelta(
                 days=self.plan.validity_days
             )
-        if not self.lessons_left:
+        if self.lessons_left is None:
             self.lessons_left = self.plan.lessons_count
         super().save(*args, **kwargs)
 
@@ -117,8 +117,8 @@ class Lesson(models.Model):
         on_delete=models.CASCADE,
         related_name="lessons",
     )
-    plan = models.ForeignKey(
-        SubscriptionPlan,
+    subscription = models.ForeignKey(
+        Subscription,
         on_delete=models.CASCADE,
         related_name="lessons",
     )
@@ -134,6 +134,8 @@ class Lesson(models.Model):
         ordering = ("start_datetime", )
 
     def clean(self):
+        if self.subscription.lessons_left == 0:
+            raise ValidationError("No lessons left in this subscription")
         if self.start_datetime and self.end_datetime:
             if not self.start_datetime < self.end_datetime:
                 raise ValidationError(
@@ -164,9 +166,16 @@ class Lesson(models.Model):
         if not self.end_datetime:
             start_time = self.start_datetime
             self.end_datetime = start_time + datetime.timedelta(
-                minutes=self.plan.lessons_duration
+                minutes=self.subscription.plan.lessons_duration
             )
         self.full_clean()
+        if not self.pk:
+            if self.subscription.lessons_left > 0:
+                self.subscription.lessons_left -= 1
+                if self.subscription.lessons_left == 0:
+                    self.subscription.is_active = False
+                self.subscription.save()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
