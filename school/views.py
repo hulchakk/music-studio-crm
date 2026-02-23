@@ -1,7 +1,9 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 
+from school.forms import SubscriptionPlanForm
 from school.models import (
     SubscriptionPlan,
     Teacher,
@@ -37,3 +39,20 @@ class SubscriptionPlanListView(generic.ListView):
 
 class SubscriptionPlanDetailView(generic.DetailView):
     model = SubscriptionPlan
+
+
+class SubscriptionPlanCreateView(generic.CreateView):
+    model = SubscriptionPlan
+    form_class = SubscriptionPlanForm
+    success_url = reverse_lazy("school:plan-list")
+
+
+class SubscriptionPlanUpdateView(generic.UpdateView):
+    model = SubscriptionPlan
+    form_class = SubscriptionPlanForm
+    success_url = reverse_lazy("school:plan-list")
+
+
+class SubscriptionPlabDeleteView(generic.DeleteView):
+    model = SubscriptionPlan
+    success_url = reverse_lazy("school:plan-list")

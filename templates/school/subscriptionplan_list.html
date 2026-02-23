@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>All plans</h1>
-  <a href="" class="btn btn-success">+</a>
+  <a href="{% url 'school:plan-create' %}" class="btn btn-success">+</a>
   <hr>
   <ul>
     {% for plan in subscriptionplan_list %}

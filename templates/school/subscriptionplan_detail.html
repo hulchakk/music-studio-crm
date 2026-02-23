@@ -3,13 +3,14 @@
 {% block content %}
   <h1>{{ subscriptionplan }}</h1>
   <ul class="list-inline">
-    <li class="list-inline-item"><a href="#" class="btn btn-success">Edit</a></li>
-    <li class="list-inline-item"><a href="#" class="btn btn-danger">Delete</a></li>
+    <li class="list-inline-item"><a href="{% url 'school:plan-update' pk=subscriptionplan.pk %}" class="btn btn-success">Edit</a></li>
+    <li class="list-inline-item"><a href="{% url 'school:plan-delete' pk=subscriptionplan.pk %}" class="btn btn-danger">Delete</a></li>
   </ul>
   <ul>
     <li>Price: {{ subscriptionplan.price }}</li>
     <li>Validity days: {{ subscriptionplan.validity_days }}</li>
     <li>Lessons count: {{ subscriptionplan.lessons_count }}</li>
+    <li>Lessons standart duration: {{ subscriptionplan.lessons_duration }} minuts</li>
   </ul>
   <hr>
   <h2>Students:</h2>
