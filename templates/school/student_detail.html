@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ student }}</h1>
+  <a href="{% url 'school:student-update' pk=student.pk %}" class="btn btn-success">Edit</a>
+  <a href="{% url 'school:student-delete' pk=student.pk %}" class="btn btn-danger">Delete</a>
+  <h2>Description:</h2>
+  <p>
+    {% if student.description %}
+        {{ student.description }}
+      {% else %}
+        Description is empty
+    {% endif %}
+  </p>
+  <hr>
+  <h2>Active subscriptions:</h2>
+  <a href="#" class="btn btn-success ">New subscription</a>
+  <a href="#" class="btn btn-secondary ">Show subscriptions history</a>
+  <table class="table">
+    <tr>
+      <th>Subscription</th>
+      <th>Teacher</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Lessons left</th>
+    </tr>
+    {% for subscription in student.subscriptions.all %}
+      {% if subscription.is_active %}
+        <tr>
+          <td><a href="#">{{ subscription }}</a></td>
+          <td>{{ subscription.teacher }}</td>
+          <td>{{ subscription.start_date }}</td>
+          <td>{{ subscription.end_date }}</td>
+          <td>{{ subscription.lessons_left }}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+{% endblock content %}

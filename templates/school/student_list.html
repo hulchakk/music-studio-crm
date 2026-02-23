@@ -2,11 +2,11 @@
 
 {% block content %}
   <h1>All students</h1>
-  <a href="" class="btn btn-success">+</a>
+  <a href="{% url "school:student-create" %}" class="btn btn-success">+</a>
   <hr>
   <ul>
     {% for student in student_list %}
-      <li><a href="#">{{ student }}</a></li>
+      <li><a href="{% url 'school:student-detail' pk=student.pk %}">{{ student }}</a></li>
     {% endfor %}
   </ul>
 {% endblock content %}

@@ -2,10 +2,8 @@
 
 {% block content %}
   <h1>{{ subscriptionplan }}</h1>
-  <ul class="list-inline">
-    <li class="list-inline-item"><a href="{% url 'school:plan-update' pk=subscriptionplan.pk %}" class="btn btn-success">Edit</a></li>
-    <li class="list-inline-item"><a href="{% url 'school:plan-delete' pk=subscriptionplan.pk %}" class="btn btn-danger">Delete</a></li>
-  </ul>
+  <a href="{% url 'school:plan-update' pk=subscriptionplan.pk %}" class="btn btn-success">Edit</a>
+  <a href="{% url 'school:plan-delete' pk=subscriptionplan.pk %}" class="btn btn-danger">Delete</a>
   <ul>
     <li>Price: {{ subscriptionplan.price }}</li>
     <li>Validity days: {{ subscriptionplan.validity_days }}</li>
@@ -16,7 +14,7 @@
   <h2>Students:</h2>
   <ul>
     {% for subscription in subscriptionplan.subscriptions.distinct %}
-      <li><a href="#">{{ subscription.student }}</a></li>
+      <li><a href="{% url 'school:student-detail' pk=subscription.student.pk %}">{{ subscription.student }}</a></li>
     {% endfor %}
   </ul>
 {% endblock content %}

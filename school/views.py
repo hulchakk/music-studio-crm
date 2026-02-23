@@ -3,7 +3,10 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from school.forms import SubscriptionPlanForm
+from school.forms import (
+    StudentForm,
+    SubscriptionPlanForm
+)
 from school.models import (
     SubscriptionPlan,
     Teacher,
@@ -25,8 +28,29 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "school/index.html", context=context)
 
 
-class StudentsListView(generic.ListView):
+class StudentListView(generic.ListView):
     model = Student
+
+
+class StudentDetailView(generic.DetailView):
+    model = Student
+
+
+class StudentCreateView(generic.CreateView):
+    model = Student
+    form_class = StudentForm
+    success_url = reverse_lazy("school:student-list")
+
+
+class StudentUpdateView(generic.UpdateView):
+    model = Student
+    form_class = StudentForm
+    success_url = reverse_lazy("school:student-list")
+
+
+class StudentDeleteView(generic.DeleteView):
+    model = Student
+    success_url = reverse_lazy("school:student-list")
 
 
 class TeacherListView(generic.ListView):
