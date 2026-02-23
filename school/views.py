@@ -33,3 +33,7 @@ class TeacherView(generic.ListView):
 
 class SubscriptionPlanView(generic.ListView):
     model = SubscriptionPlan
+
+
+class SubscriptionPlanDetailView(generic.DetailView):
+    model = SubscriptionPlan
