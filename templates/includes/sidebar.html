@@ -1,15 +1,14 @@
 <ul class="sidebar-nav list-group">
-{% if user.is_authenticated %}
-  <li class="list-group-item">User: <a href="">{{ user.get_username }}</a></li>
-  <li class="list-group-item"><a href="">Logout</a></li>
-{% else %}
-  <li class="list-group-item"><a href="">Login</a></li>
-{% endif %}
-
+  {% if user.is_authenticated %}
+    <li class="list-group-item">User: <a href="">{{ user.get_username }}</a></li>
+    <li class="list-group-item"><a href="">Logout</a></li>
+  {% else %}
+    <li class="list-group-item"><a href="">Login</a></li>
+  {% endif %}
 <br>
-
-<li class="list-group-item"><a href="{% url "school:index" %}">Home</a></li>
-<li class="list-group-item"><a href="{% url "school:student-list" %}">All Students</a></li>
-<li class="list-group-item"><a href="{% url "school:teacher-list" %}">All teachers</a></li>
-<li class="list-group-item"><a href="#">Timetable</a></li>
+  <li class="list-group-item"><a href="{% url "school:index" %}">Home</a></li>
+  <li class="list-group-item"><a href="{% url "school:student-list" %}">All Students</a></li>
+  <li class="list-group-item"><a href="{% url "school:teacher-list" %}">All teachers</a></li>
+  <li class="list-group-item"><a href="{% url "school:plan-list" %}">All plans</a></li>
+  <li class="list-group-item"><a href="#">Timetable</a></li>
 </ul>

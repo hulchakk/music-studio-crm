@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import generic
 
 from school.models import (
+    SubscriptionPlan,
     Teacher,
     Student,
     Lesson,
@@ -28,3 +29,7 @@ class StudentsView(generic.ListView):
 
 class TeacherView(generic.ListView):
     model = Teacher
+
+
+class SubscriptionPlanView(generic.ListView):
+    model = SubscriptionPlan
