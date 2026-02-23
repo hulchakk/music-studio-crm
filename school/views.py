@@ -1,5 +1,6 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.views import generic
 
 from school.models import (
     Teacher,
@@ -19,3 +20,7 @@ def index(request: HttpRequest) -> HttpResponse:
     }
 
     return render(request, "school/index.html", context=context)
+
+
+class StudentsView(generic.ListView):
+    model = Student

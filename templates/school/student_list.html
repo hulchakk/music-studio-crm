@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>All students</h1>
+  <a href="" class="btn btn-success">+</a>
+  <hr>
+  <ul>
+    {% for student in student_list %}
+      <li><a href="#">{{ student }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock content %}
