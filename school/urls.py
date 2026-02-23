@@ -8,6 +8,10 @@ from school.views import (
     StudentUpdateView,
     StudentDeleteView,
     TeacherListView,
+    TeacherDetailView,
+    TeacherCreateView,
+    TeacherUpdateView,
+    TeacherDeleteView,
     SubscriptionPlanListView,
     SubscriptionPlanDetailView,
     SubscriptionPlanCreateView,
@@ -40,6 +44,26 @@ urlpatterns = [
         name="student-delete"
     ),
     path("teachers/", TeacherListView.as_view(), name="teacher-list"),
+    path(
+        "teachers/<int:pk>/",
+        TeacherDetailView.as_view(),
+        name="teacher-detail"
+    ),
+    path(
+        "teachers/create/",
+        TeacherCreateView.as_view(),
+        name="teacher-create"
+    ),
+    path(
+        "teachers/<int:pk>/update/",
+        TeacherUpdateView.as_view(),
+        name="teacher-update"
+    ),
+    path(
+        "teachers/<int:pk>/delete/",
+        TeacherDeleteView.as_view(),
+        name="teacher-delete"
+    ),
     path("plans/", SubscriptionPlanListView.as_view(), name="plan-list"),
     path(
         "plans/<int:pk>/",

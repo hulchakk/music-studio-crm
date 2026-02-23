@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ teacher }}</h1>
+  <a href="{% url 'school:teacher-update' pk=teacher.pk %}" class="btn btn-success">Edit</a>
+  <a href="{% url 'school:teacher-delete' pk=teacher.pk %}" class="btn btn-danger">Delete</a>
+  <h2>Description:</h2>
+  <p>
+    {% if teacher.description %}
+        {{ teacher.description }}
+      {% else %}
+        Description is empty
+    {% endif %}
+  </p>
+  <ul>
+    <li>Phone number: {{ teacher.phone_number }}</li>
+    <li>Telegram id: 
+      {% if teacher.telegram_id %}
+          {{ teacher.telegram_id }}
+        {% else %}
+          <a href="#">Connect telegram</a>
+      {% endif %}
+    </li>
+    <li>Count of students: {{ teacher.subscriptions.count }}</li>
+  </ul>
+  <hr>
+  <h2>Active subscriptions:</h2>
+  <a href="#" class="btn btn-success ">New subscription</a>
+  <a href="#" class="btn btn-secondary ">Show subscriptions history</a>
+  <table class="table">
+    <tr>
+      <th>Subscription</th>
+      <th>Teacher</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Lessons left</th>
+    </tr>
+    {% for subscription in teacher.subscriptions.all %}
+      {% if subscription.is_active %}
+        <tr>
+          <td><a href="#">{{ subscription }}</a></td>
+          <td>{{ subscription.teacher }}</td>
+          <td>{{ subscription.start_date }}</td>
+          <td>{{ subscription.end_date }}</td>
+          <td>{{ subscription.lessons_left }}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+{% endblock content %}

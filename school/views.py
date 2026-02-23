@@ -5,7 +5,9 @@ from django.views import generic
 
 from school.forms import (
     StudentForm,
-    SubscriptionPlanForm
+    SubscriptionPlanForm,
+    TeacherCreationForm,
+    TeacherUpdateForm,
 )
 from school.models import (
     SubscriptionPlan,
@@ -55,6 +57,27 @@ class StudentDeleteView(generic.DeleteView):
 
 class TeacherListView(generic.ListView):
     model = Teacher
+
+
+class TeacherDetailView(generic.DetailView):
+    model = Teacher
+
+
+class TeacherCreateView(generic.CreateView):
+    model = Teacher
+    form_class = TeacherCreationForm
+    success_url = reverse_lazy("school:teacher-list")
+
+
+class TeacherUpdateView(generic.UpdateView):
+    model = Teacher
+    form_class = TeacherUpdateForm
+    success_url = reverse_lazy("school:teacher-list")
+
+
+class TeacherDeleteView(generic.DeleteView):
+    model = Teacher
+    success_url = reverse_lazy("school:teacher-list")
 
 
 class SubscriptionPlanListView(generic.ListView):
