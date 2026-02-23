@@ -110,6 +110,11 @@ class Subscription(models.Model):
 
 
 class Lesson(models.Model):
+    LESSON_STATUS = (
+        ("planned", "Lesson is planned"),
+        ("done", "Lesson is done"),
+        ("skipped", "Lesson is skipped"),
+    )
     student = models.ForeignKey(
         Student,
         on_delete=models.CASCADE,
@@ -135,7 +140,7 @@ class Lesson(models.Model):
         blank=True,
         null=True,
     )
-    status = models.CharField(max_length=55)
+    status = models.CharField(max_length=55, choices=LESSON_STATUS)
     notes = models.TextField(null=True, blank=True)
 
     class Meta:
