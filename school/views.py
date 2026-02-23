@@ -23,15 +23,15 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "school/index.html", context=context)
 
 
-class StudentsView(generic.ListView):
+class StudentsListView(generic.ListView):
     model = Student
 
 
-class TeacherView(generic.ListView):
+class TeacherListView(generic.ListView):
     model = Teacher
 
 
-class SubscriptionPlanView(generic.ListView):
+class SubscriptionPlanListView(generic.ListView):
     model = SubscriptionPlan
 
 

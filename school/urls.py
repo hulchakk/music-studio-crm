@@ -2,18 +2,18 @@ from django.urls import path
 
 from school.views import (
     index,
-    StudentsView,
-    TeacherView,
-    SubscriptionPlanView,
+    StudentsListView,
+    TeacherListView,
+    SubscriptionPlanListView,
     SubscriptionPlanDetailView,
 )
 
 
 urlpatterns = [
      path("", index, name="index"),
-     path("students/", StudentsView.as_view(), name="student-list"),
-     path("teachers/", TeacherView.as_view(), name="teacher-list"),
-     path("plans/", SubscriptionPlanView.as_view(), name="plan-list"),
+     path("students/", StudentsListView.as_view(), name="student-list"),
+     path("teachers/", TeacherListView.as_view(), name="teacher-list"),
+     path("plans/", SubscriptionPlanListView.as_view(), name="plan-list"),
      path("plans/<int:pk>/", SubscriptionPlanDetailView.as_view(), name="plan-detail")
 ]
 
