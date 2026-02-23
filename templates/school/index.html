@@ -1,42 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    {% load static %}
-    <link rel="stylesheet" href="{% static "css/styles.css" %}">
-</head>
-<body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="sidebar col-sm-2">
-          <ul class="sidebar-nav list-group">
-            {% if user.is_authenticated %}
-              <li class="list-group-item">User: <a href="">{{ user.get_username }}</a></li>
-              <li class="list-group-item"><a href="">Logout</a></li>
-            {% else %}
-              <li class="list-group-item"><a href="">Login</a></li>
-            {% endif %}
+{% extends "base.html" %}
 
-            <br>
-
-            <li class="list-group-item"><a href="{% url "school:index" %}">Home</a></li>
-            <li class="list-group-item"><a href="#">All Students</a></li>
-            <li class="list-group-item"><a href="#">All teachers</a></li>
-            <li class="list-group-item"><a href="#">Timetable</a></li>
-          </ul>
-        </div>
-        <div class="content col-sm-10" >
-          <h1>School home page</h1>
-          <ul>
-              <li>Teachers: {{ teachers_count }}</li>
-              <li>Students: {{ students_count }}</li>
-              <li>Lessons: {{ lessons_count }}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-</body>
-</html>
+{% block content %}
+  <h1>School home page</h1>
+  <ul>
+      <li>Teachers: {{ teachers_count }}</li>
+      <li>Students: {{ students_count }}</li>
+      <li>Lessons: {{ lessons_count }}</li>
+  </ul>
+{% endblock content %}
