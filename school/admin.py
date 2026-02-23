@@ -57,6 +57,7 @@ class StudentAdmin(admin.ModelAdmin):
         "last_name",
         "description",
     )
+    search_fields = ("first_name", "last_name", )
 
 
 @admin.register(SubscriptionPlan)
@@ -87,6 +88,9 @@ class SubscriptionAdmin(admin.ModelAdmin):
         "end_date",
         "is_active",
     )
+    list_editable = ("is_active", )
+    list_filter = ("is_active",  "plan", "start_date", "teacher", )
+    search_fields = ("student__first_name", "student__last_name", )
 
 
 @admin.register(Lesson)
@@ -99,3 +103,5 @@ class LessonAdmin(admin.ModelAdmin):
         "start_datetime",
         "status",
     )
+    list_filter = ("status", "room", "start_datetime", "teacher", )
+    search_fields = ("student__first_name", "student__last_name", )
