@@ -4,6 +4,7 @@
   <h1>{{ subscriptionplan }}</h1>
   <a href="{% url 'school:plan-update' pk=subscriptionplan.pk %}" class="btn btn-success">Edit</a>
   <a href="{% url 'school:plan-delete' pk=subscriptionplan.pk %}" class="btn btn-danger">Delete</a>
+  <hr>
   <ul>
     <li>Price: {{ subscriptionplan.price }}</li>
     <li>Validity days: {{ subscriptionplan.validity_days }}</li>

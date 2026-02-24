@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>All teachers</h1>
-  <a href="" class="btn btn-success">+</a>
+  <a href="{% url 'school:teacher-create' %}" class="btn btn-success">+</a>
   <hr>
   <ul>
     {% for teacher in teacher_list %}
