@@ -8,6 +8,6 @@
       {{ form|crispy }}
       <hr>
       <input type="submit" class="btn btn-success" value="{{ object|yesno:"Save,Add" }}">
-      <button type="button" class="btn btn-danger" onclick="history.back()">Cancel</button>
+      <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
   </form>
 {% endblock content %}

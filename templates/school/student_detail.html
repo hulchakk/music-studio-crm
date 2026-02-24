@@ -14,7 +14,7 @@
   </p>
   <hr>
   <h2>Active subscriptions:</h2>
-  <a href="#" class="btn btn-success ">New subscription</a>
+  <a href="{% url 'school:subscription-create' %}?student={{ student.pk }}" class="btn btn-success ">New subscription</a>
   <a href="#" class="btn btn-secondary ">Show subscriptions history</a>
   <table class="table">
     <tr>
@@ -27,7 +27,7 @@
     {% for subscription in student.subscriptions.all %}
       {% if subscription.is_active %}
         <tr>
-          <td><a href="#">{{ subscription }}</a></td>
+          <td><a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription }}</a></td>
           <td>{{ subscription.teacher }}</td>
           <td>{{ subscription.start_date }}</td>
           <td>{{ subscription.end_date }}</td>
