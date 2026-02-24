@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>All plans</h1>
-  <a href="{% url 'school:plan-create' %}" class="btn btn-success">+</a>
+  <h1>All plans <a href="{% url 'school:plan-create' %}" class="btn btn-success">+</a></h1>
   <hr>
   <ul>
     {% for plan in subscriptionplan_list %}

@@ -3,14 +3,18 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.db.models import Value, CharField
+from django.db.models.functions import Concat
 
 from school.forms import (
     StudentForm,
+    StudentSearchForm,
     SubscriptionCreationForm,
     SubscriptionUpdateForm,
     SubscriptionPlanForm,
     TeacherCreationForm,
     TeacherUpdateForm,
+    TeacherSearchForm,
 )
 from school.models import (
     Subscription,
@@ -36,6 +40,34 @@ def index(request: HttpRequest) -> HttpResponse:
 
 class StudentListView(generic.ListView):
     model = Student
+    paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(StudentListView, self).get_context_data(**kwargs)
+        search_text = self.request.GET.get("search_text", "")
+        context["search_form"] = StudentSearchForm(
+            initial={
+                "search_text": search_text,
+            },
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_text = self.request.GET.get("search_text")
+        if search_text:
+            return queryset.annotate(
+                full_name=Concat(
+                    "first_name",
+                    Value(" "),
+                    "last_name",
+                    output_field=CharField(),
+                )
+            ).filter(
+                full_name__istartswith=search_text
+            )
+
+        return queryset
 
 
 class StudentDetailView(generic.DetailView):
@@ -61,6 +93,34 @@ class StudentDeleteView(generic.DeleteView):
 
 class TeacherListView(generic.ListView):
     model = Teacher
+    paginate_by = 10
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(TeacherListView, self).get_context_data(**kwargs)
+        search_text = self.request.GET.get("search_text", "")
+        context["search_form"] = TeacherSearchForm(
+            initial={
+                "search_text": search_text,
+            },
+        )
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_text = self.request.GET.get("search_text")
+        if search_text:
+            return queryset.annotate(
+                full_name=Concat(
+                    "first_name",
+                    Value(" "),
+                    "last_name",
+                    output_field=CharField(),
+                )
+            ).filter(
+                full_name__istartswith=search_text
+            )
+
+        return queryset
 
 
 class TeacherDetailView(generic.DetailView):
@@ -86,6 +146,7 @@ class TeacherDeleteView(generic.DeleteView):
 
 class SubscriptionPlanListView(generic.ListView):
     model = SubscriptionPlan
+    paginate_by = 10
 
 
 class SubscriptionPlanDetailView(generic.DetailView):

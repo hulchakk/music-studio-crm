@@ -73,12 +73,26 @@ class StudentForm(forms.ModelForm):
         fields = "__all__"
 
 
+class StudentSearchForm(forms.Form):
+    search_text = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search student"
+            }
+        )
+    )
+
+
 class TeacherCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Teacher
         fields = UserCreationForm.Meta.fields + (
             "first_name",
             "last_name",
+            "phone_number",
             "telegram_id",
             "description",
         )
@@ -95,3 +109,16 @@ class TeacherUpdateForm(forms.ModelForm):
             "phone_number",
             "description",
         ]
+
+
+class TeacherSearchForm(forms.Form):
+    search_text = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": "Search teacher"
+            }
+        )
+    )

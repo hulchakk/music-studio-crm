@@ -12,10 +12,5 @@
     <li>Lessons standart duration: {{ subscriptionplan.lessons_duration }} minuts</li>
   </ul>
   <hr>
-  <h2>Students:</h2>
-  <ul>
-    {% for subscription in subscriptionplan.subscriptions.distinct %}
-      <li><a href="{% url 'school:student-detail' pk=subscription.student.pk %}">{{ subscription.student }}</a></li>
-    {% endfor %}
-  </ul>
+  <h2>Subscriptions count: {{ subscriptionplan.subscriptions.count }}</h2>
 {% endblock content %}
