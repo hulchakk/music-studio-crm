@@ -15,6 +15,7 @@ from school.forms import (
     TeacherCreationForm,
     TeacherUpdateForm,
     TeacherSearchForm,
+    SubsciptionFilterForm,
 )
 from school.models import (
     Subscription,
@@ -95,8 +96,8 @@ class TeacherListView(generic.ListView):
     model = Teacher
     paginate_by = 10
 
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(TeacherListView, self).get_context_data(**kwargs)
+    def get_context_data(self):
+        context = super(TeacherListView, self).get_context_data()
         search_text = self.request.GET.get("search_text", "")
         context["search_form"] = TeacherSearchForm(
             initial={
@@ -168,6 +169,48 @@ class SubscriptionPlanUpdateView(generic.UpdateView):
 class SubscriptionPlabDeleteView(generic.DeleteView):
     model = SubscriptionPlan
     success_url = reverse_lazy("school:plan-list")
+
+
+class SubscriptionsListView(generic.ListView):
+    model = Subscription
+    paginate_by = 10
+
+    def get_context_data(self):
+        context = super(SubscriptionsListView, self).get_context_data()
+
+        filter_form = SubsciptionFilterForm(
+            initial=self.request.GET
+        )
+        context["filter_form"] = filter_form
+
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        student_id = self.request.GET.get("student")
+        teacher_id = self.request.GET.get("teacher")
+        date_after = self.request.GET.get("date_after")
+        date_before = self.request.GET.get("date_before")
+        plan = self.request.GET.get("plan")
+
+        if student_id:
+            queryset = queryset.filter(student_id=student_id)
+        if teacher_id:
+            queryset = queryset.filter(teacher_id=teacher_id)
+        if date_after:
+            queryset = queryset.filter(
+                start_date__gte=date_after,
+            )
+        if date_before:
+            queryset = queryset.filter(
+                start_date__lte=date_before,
+            )
+        if plan:
+            queryset = queryset.filter(
+                plan=plan
+            )
+
+        return queryset
 
 
 class SubscriptionCreateView(generic.CreateView):

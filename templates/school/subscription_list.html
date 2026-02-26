@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>All subscriptions</h1>
+  <form method="GET" action="" class="mb-4">
+    <div class="form-row align-items-end">
+      <div class="col-md-2">
+        {{ filter_form.teacher|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.student|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.date_before|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.date_after|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.plan|as_crispy_field }}
+      </div>
+      
+      <div class="col-md-2 mb-3"> <button type="submit" class="btn btn-primary">🔎</button>
+        <a href="{% url 'school:subscription-create' %}" class="btn btn-success ml-1">+</a>
+      </div>
+    </div>
+  </form>
+  <hr>
+  <table class="table">
+    <tr>
+      <th>Subscription</th>
+      <th>Teacher</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Lessons left</th>
+    </tr>
+    {% for subscription in subscription_list %}
+      <tr>
+        <td><a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription }}</a></td>
+        <td>{{ subscription.teacher }}</td>
+        <td>{{ subscription.start_date }}</td>
+        <td>{{ subscription.end_date }}</td>
+        <td>{{ subscription.lessons_left }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock content %}

@@ -17,6 +17,10 @@ class SubscriptionPlanForm(forms.ModelForm):
 
 
 class SubscriptionCreationForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=False,
+    )
     room = forms.ModelChoiceField(
         queryset=Room.objects.all(),
         required=False,
@@ -47,15 +51,25 @@ class SubscriptionCreationForm(forms.ModelForm):
         )
 
     def clean(self):
-            cleaned_data = super().clean()
-            room = cleaned_data.get("room")
-            has_schedule = any(cleaned_data.get(f"time_{i}") for i in range(7))
-            if has_schedule and not room:
-                self.add_error("room", "Please choose room for schedule")
-            return cleaned_data
+        cleaned_data = super().clean()
+        room = cleaned_data.get("room")
+        has_schedule = any(cleaned_data.get(f"time_{i}") for i in range(7))
+        if has_schedule and not room:
+            self.add_error("room", "Please choose room for schedule")
+
+        return cleaned_data
 
 
 class SubscriptionUpdateForm(forms.ModelForm):
+    start_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=False,
+    )
+    end_date = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=False,
+    )
+
     class Meta:
         model = Subscription
         fields = (
@@ -121,4 +135,27 @@ class TeacherSearchForm(forms.Form):
                 "placeholder": "Search teacher"
             }
         )
+    )
+
+
+class SubsciptionFilterForm(forms.Form):
+    teacher = forms.ModelChoiceField(
+        queryset=Teacher.objects.all(),
+        required=False,
+    )
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all(),
+        required=False,
+    )
+    date_before = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=False,
+    )
+    date_after = forms.DateField(
+        widget=forms.DateInput(attrs={"type": "date"}),
+        required=False,
+    )
+    plan = forms.ModelChoiceField(
+        queryset=SubscriptionPlan.objects.all(),
+        required=False,
     )

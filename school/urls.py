@@ -17,6 +17,7 @@ from school.views import (
     SubscriptionPlanCreateView,
     SubscriptionPlanUpdateView,
     SubscriptionPlabDeleteView,
+    SubscriptionsListView,
     SubscriptionCreateView,
     SubscriptionUpdateView,
     SubscriptionDeleteView,
@@ -87,6 +88,11 @@ urlpatterns = [
         "plans/<int:pk>/delete/",
         SubscriptionPlabDeleteView.as_view(),
         name="plan-delete"
+    ),
+    path(
+        "subscriptions/",
+        SubscriptionsListView.as_view(),
+        name="subscription-list"
     ),
     path(
         "subscriptions/create/",
