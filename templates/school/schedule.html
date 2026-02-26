@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>Timetable</h1>
+  <form method="GET" action="" class="mb-4">
+    <div class="form-row align-items-end">
+      <div class="col-md-2">
+        {{ filter_form.teacher|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.student|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.room|as_crispy_field }}
+      </div>
+      <div class="col-md-2">
+        {{ filter_form.week|as_crispy_field }}
+      </div>
+
+      <div class="col-md-2 mb-3"> <button type="submit" class="btn btn-primary">🔎</button>
+        <a href="{% url 'school:subscription-create' %}" class="btn btn-success ml-1">+</a>
+      </div>
+    </div>
+  </form>
+  <hr>
+  <table class="table table-bordered table-striped">
+    <tr>
+      {% for day in week_days %}
+        <th>
+          <p>{{ day.name }}</p>
+          <p>{{ day.date|date:"d.m.Y" }}</p>
+        </th>
+      {% endfor %}
+    </tr>
+    <tr>
+      {% for day in week_days %}
+        <td>
+          {% for lesson in day.lessons %}
+            <div class="lesson-card shadow-sm mb-4 p-3">
+              <span class="badge badge-info">{{ lesson.start_datetime.time|time:'H:i' }}</span>
+              <span class="lesson-duration">{{ lesson.subscription.plan.lessons_duration }} min</span>
+              <br>
+              <span>
+                <strong>T:</strong> 
+                <a href={% url 'school:teacher-detail' pk=lesson.teacher.pk %}>
+                  {{ lesson.teacher.first_name|slice:":1" }}. {{ lesson.teacher.last_name }}
+                </a>
+              </span>
+              <br>
+              <span>
+                <strong>S:</strong> 
+                <a href="{% url 'school:student-detail' pk=lesson.student.pk %}">
+                  {{ lesson.student.first_name|slice:":1" }}. {{ lesson.student.last_name }}
+                </a>
+              </span>
+              <br>
+              <span>
+                <strong>Room:</strong> 
+                <a href="">
+                  {{ lesson.room }}
+                </a>
+              </span>
+              <br>
+              <span>
+                <strong>Status:</strong> {{ lesson.status }}
+              </span>
+              <hr>
+              <div class="text-center">
+                <a href="">
+                  Details...
+                </a>
+              </div>
+            </div>
+            {% empty %}
+              <p>
+                No lessons
+              </p>
+          {% endfor %}
+        </td>
+      {% endfor %}
+    </tr>
+  </table>
+{% endblock content %}

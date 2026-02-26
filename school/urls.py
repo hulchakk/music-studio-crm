@@ -2,6 +2,7 @@ from django.urls import path
 
 from school.views import (
     index,
+    timetable,
     StudentListView,
     StudentDetailView,
     StudentCreateView,
@@ -109,6 +110,11 @@ urlpatterns = [
         SubscriptionDeleteView.as_view(),
         name="subscription-delete"
     ),
+    path(
+        "schedule/",
+        timetable,
+        name="schedule"
+    )
 ]
 
 app_name = "school"

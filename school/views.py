@@ -1,4 +1,5 @@
 import datetime
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -16,6 +17,7 @@ from school.forms import (
     TeacherUpdateForm,
     TeacherSearchForm,
     SubsciptionFilterForm,
+    ScheduleFilterForm,
 )
 from school.models import (
     Subscription,
@@ -37,6 +39,64 @@ def index(request: HttpRequest) -> HttpResponse:
     }
 
     return render(request, "school/index.html", context=context)
+
+
+def timetable(request: HttpRequest) -> HttpResponse:
+    today = datetime.date.today()
+    form_data = request.GET.copy()
+    queryset = None
+    week = form_data.get("week")
+    if not week:
+        year, week_num, _ = today.isocalendar()
+        form_data["week"] = f"{year}-W{week_num:02d}"
+
+    filter_form = ScheduleFilterForm(
+        data=form_data,
+    )
+
+    if filter_form.is_valid():
+        queryset = Lesson.objects.all()
+        filters = filter_form.cleaned_data
+        teacher = filters.get("teacher")
+        student = filters.get("student")
+        room = filters.get("room")
+
+        if teacher:
+            queryset = queryset.filter(
+                teacher_id=teacher,
+            )
+        if student:
+            queryset = queryset.filter(
+                student_id=student,
+            )
+        if room:
+            queryset = queryset.filter(
+                room_id=room,
+            )
+
+    week_start_date = datetime.datetime.strptime(week + "-1", "%G-W%V-%u").date()
+    context = {
+        "filter_form": filter_form,
+        "week_days": [],
+    }
+    for week_day in range(7):
+        day_date = week_start_date + datetime.timedelta(days=week_day)
+        if queryset:
+            day_lessons = queryset.filter(
+                        start_datetime__date=day_date,
+            )
+        else:
+            day_lessons = []
+        context["week_days"].append(
+            {
+                "name": day_date.strftime("%A"),
+                "date": day_date,
+                "lessons": day_lessons,
+            },
+        )
+    
+
+    return render(request, "school/schedule.html", context=context)
 
 
 class StudentListView(generic.ListView):
