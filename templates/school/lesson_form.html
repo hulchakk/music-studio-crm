@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <form method="POST">
+    {% csrf_token %}
+    
+    <div class="form-row">
+      <div class="col-md-4">
+        {{ form.student|as_crispy_field }}
+      </div>
+      <div class="col-md-4">
+        {{ form.teacher|as_crispy_field }}
+      </div>
+      <div class="col-md-4">
+        {{ form.room|as_crispy_field }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-4">
+        {{ form.start_datetime|as_crispy_field }}
+      </div>
+      <div class="col-md-4">
+        {{ form.subscription|as_crispy_field }}
+      </div>
+      <div class="col-md-4">
+        {{ form.status|as_crispy_field }}
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="col-md-12">
+        {{ form.notes|as_crispy_field }}
+      </div>
+    </div>
+
+    <hr>
+
+    <div class="form-group">
+      <input type="submit" class="btn btn-success" value="{{ object|yesno:'Save,Add' }}">
+      <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+    </div>
+  </form>
+{% endblock content %}

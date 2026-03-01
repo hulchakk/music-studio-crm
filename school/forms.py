@@ -1,9 +1,8 @@
-import datetime
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
 from school.models import (
+    Lesson,
     Room,
     Student,
     Subscription,
@@ -178,7 +177,12 @@ class ScheduleFilterForm(forms.Form):
     )
     week = forms.CharField(
         required=True,
-        widget=forms.TextInput(attrs={"type": "week", "class": "form-control"}),
+        widget=forms.TextInput(
+            attrs={
+                "type": "week",
+                "class": "form-control"
+            }
+        ),
     )
 
     def clean(self):
@@ -190,3 +194,30 @@ class ScheduleFilterForm(forms.Form):
             raise forms.ValidationError("No choises")
 
         return cleaned_data
+
+
+class LessonForm(forms.ModelForm):
+    start_datetime = forms.DateTimeField(
+        widget=forms.DateTimeInput(
+            attrs={
+                "type": "datetime-local",
+                "class": "form-control",
+            }
+        )
+    )
+    subscription = forms.ModelChoiceField(
+        queryset=Subscription.objects.filter(is_active=True),
+        required=False,
+    )
+
+    class Meta:
+        model = Lesson
+        fields = (
+            "student",
+            "teacher",
+            "subscription",
+            "room",
+            "start_datetime",
+            "status",
+            "notes"
+        )

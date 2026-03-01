@@ -8,6 +8,7 @@ from django.db.models import Value, CharField
 from django.db.models.functions import Concat
 
 from school.forms import (
+    LessonForm,
     StudentForm,
     StudentSearchForm,
     SubscriptionCreationForm,
@@ -49,6 +50,7 @@ def timetable(request: HttpRequest) -> HttpResponse:
     if not week:
         year, week_num, _ = today.isocalendar()
         form_data["week"] = f"{year}-W{week_num:02d}"
+        week = form_data["week"]
 
     filter_form = ScheduleFilterForm(
         data=form_data,
@@ -74,7 +76,10 @@ def timetable(request: HttpRequest) -> HttpResponse:
                 room_id=room,
             )
 
-    week_start_date = datetime.datetime.strptime(week + "-1", "%G-W%V-%u").date()
+    week_start_date = datetime.datetime.strptime(
+        week + "-1",
+        "%G-W%V-%u"
+    ).date()
     context = {
         "filter_form": filter_form,
         "week_days": [],
@@ -94,7 +99,6 @@ def timetable(request: HttpRequest) -> HttpResponse:
                 "lessons": day_lessons,
             },
         )
-    
 
     return render(request, "school/schedule.html", context=context)
 
@@ -332,3 +336,21 @@ class SubscriptionUpdateView(generic.UpdateView):
 class SubscriptionDeleteView(generic.DeleteView):
     model = Subscription
     success_url = reverse_lazy("school:student-list")
+
+
+class LessonUpdateView(generic.UpdateView):
+    model = Lesson
+    form_class = LessonForm
+    success_url = reverse_lazy("school:schedule")
+
+
+class LessonCreateView(generic.CreateView):
+    model = Lesson
+    form_class = LessonForm
+    success_url = reverse_lazy("school:schedule")
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial.update(self.request.GET.dict())
+        initial["status"] = "planned"
+        return initial

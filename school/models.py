@@ -147,17 +147,13 @@ class Lesson(models.Model):
         ordering = ("start_datetime", )
 
     def clean(self):
-        if self.subscription.lessons_left == 0:
+        if self.subscription.lessons_left == 0 and not self.pk:
             raise ValidationError("No lessons left in this subscription")
-        if not self.end_datetime:
-            start_time = self.start_datetime
-            self.end_datetime = start_time + datetime.timedelta(
-                minutes=self.subscription.plan.lessons_duration
-            )
-        if not self.start_datetime < self.end_datetime:
-            raise ValidationError(
-                "End time must be later than start time"
-            )
+        start_time = self.start_datetime
+        self.end_datetime = start_time + datetime.timedelta(
+            minutes=self.subscription.plan.lessons_duration
+        )
+
         overlapping_lessons = Lesson.objects.filter(
                 Q(start_datetime__lt=self.end_datetime) &
                 Q(end_datetime__gt=self.start_datetime)

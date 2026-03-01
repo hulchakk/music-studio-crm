@@ -23,6 +23,7 @@
       <th>Start date</th>
       <th>End date</th>
       <th>Lessons left</th>
+      <th>Add lesson</th>
     </tr>
     {% for subscription in student.subscriptions.all %}
       {% if subscription.is_active %}
@@ -32,6 +33,7 @@
           <td>{{ subscription.start_date }}</td>
           <td>{{ subscription.end_date }}</td>
           <td>{{ subscription.lessons_left }}</td>
+          <td><a href="{% url 'school:lesson-create' %}?subscription={{ subscription.pk }}&student={{ student.pk }}&teacher={{ subscription.teacher.pk }}" class="btn btn-success">+</a></td>
         </tr>
       {% endif %}
     {% endfor %}

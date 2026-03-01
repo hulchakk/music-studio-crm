@@ -22,6 +22,8 @@ from school.views import (
     SubscriptionCreateView,
     SubscriptionUpdateView,
     SubscriptionDeleteView,
+    LessonUpdateView,
+    LessonCreateView,
 )
 
 
@@ -114,7 +116,17 @@ urlpatterns = [
         "schedule/",
         timetable,
         name="schedule"
-    )
+    ),
+    path(
+        "lessons/create/",
+        LessonCreateView.as_view(),
+        name="lesson-create"
+    ),
+    path(
+        "lessons/<int:pk>/update/",
+        LessonUpdateView.as_view(),
+        name="lesson-update"
+    ),
 ]
 
 app_name = "school"
