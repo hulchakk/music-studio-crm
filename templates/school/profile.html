@@ -1,39 +1,98 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ teacher }}</h1>
-  <ul>
-    <li>Phone number: {{ teacher.phone_number }}</li>
-    <li>Telegram id: 
-      {% if teacher.telegram_id %}
-          {{ teacher.telegram_id }}
-        {% else %}
-          <a href="#">Connect telegram</a>
-      {% endif %}
-    </li>
-    <li>Count of students: {{ teacher.subscriptions.distinct.count }}</li>
-  </ul>
-  <a href="{% url 'school:profile-schedule' pk=user.pk %}" class="btn btn-primary">My schedule</a>
-  <hr>
-  <h2>Active subscriptions:</h2>
-  <table class="table">
-    <tr>
-      <th>Subscription</th>
-      <th>Teacher</th>
-      <th>Start date</th>
-      <th>End date</th>
-      <th>Lessons left</th>
-    </tr>
-    {% for subscription in teacher.subscriptions.all %}
-      {% if subscription.is_active %}
-        <tr>
-          <td><a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription }}</a></td>
-          <td>{{ subscription.teacher }}</td>
-          <td>{{ subscription.start_date }}</td>
-          <td>{{ subscription.end_date }}</td>
-          <td>{{ subscription.lessons_left }}</td>
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </table>
+<div class="container mt-4">
+  <div class="row align-items-center mb-4">
+    <div class="col-md-8">
+      <h1 class="display-5 font-weight-bold mb-1">Hello, {{ teacher.first_name|default:teacher.username }}!</h1>
+      <p class="text-muted">Welcome to your teacher dashboard.</p>
+    </div>
+    <div class="col-md-4 text-md-right">
+      <a href="{% url 'school:profile-schedule' pk=user.pk %}" class="btn btn-primary btn-lg shadow-sm">
+        📅 My Schedule
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-4 mb-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title font-weight-bold mb-3">Your Profile</h5>
+          <hr>
+          <div class="mb-3">
+            <small class="text-uppercase text-muted d-block">Phone Number</small>
+            <span class="h6">{{ teacher.phone_number|default:"Not set" }}</span>
+          </div>
+          <div class="mb-3">
+            <small class="text-uppercase text-muted d-block">Telegram Status</small>
+            {% if teacher.telegram_id %}
+              <span class="badge badge-success px-3 py-2">Connected ✅</span>
+            {% else %}
+              <a href="" class="btn btn-sm btn-outline-info">
+                Connect Telegram Bot
+              </a>
+            {% endif %}
+          </div>
+          <div class="mb-0">
+            <small class="text-uppercase text-muted d-block">Active Students</small>
+            <span class="h6">{{ teacher.subscriptions.distinct.count }} users</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+          <h5 class="mb-0 font-weight-bold">Current Active Subscriptions</h5>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light text-muted">
+              <tr>
+                <th class="border-0">Student</th>
+                <th class="border-0">Start Date</th>
+                <th class="border-0">End Date</th>
+                <th class="border-0 text-center">Lessons Left</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for subscription in teacher.subscriptions.all %}
+                {% if subscription.is_active %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'school:subscription-update' pk=subscription.pk %}" class="text-primary font-weight-bold">
+                        {{ subscription.student }}
+                      </a>
+                    </td>
+                    <td class="small">{{ subscription.start_date|date:"d.m.Y" }}</td>
+                    <td class="small">{{ subscription.end_date|date:"d.m.Y" }}</td>
+                    <td class="text-center">
+                      <span class="badge badge-pill {% if subscription.lessons_left > 1 %}badge-light border{% else %}badge-danger{% endif %} px-3 py-2">
+                        {{ subscription.lessons_left }}
+                      </span>
+                    </td>
+                  </tr>
+                {% endif %}
+              {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-muted">No active subscriptions at the moment.</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card { border-radius: 12px; }
+  .table thead th { font-size: 0.8rem; letter-spacing: 0.5px; }
+  .table td { vertical-align: middle; }
+  .display-5 { font-size: 2.2rem; }
+  .badge-pill { font-size: 0.9rem; }
+</style>
 {% endblock content %}

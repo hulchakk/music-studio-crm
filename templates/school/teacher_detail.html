@@ -1,52 +1,96 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ teacher }}</h1>
-  <a href="{% url 'school:teacher-update' pk=teacher.pk %}" class="btn btn-success">Edit</a>
-  <a href="{% url 'school:teacher-delete' pk=teacher.pk %}" class="btn btn-danger">Delete</a>
-  <h2>Description:</h2>
-  <p>
-    {% if teacher.description %}
-        {{ teacher.description }}
-      {% else %}
-        Description is empty
-    {% endif %}
-  </p>
-  <ul>
-    <li>Phone number: {{ teacher.phone_number }}</li>
-    <li>Telegram id: 
-      {% if teacher.telegram_id %}
-          {{ teacher.telegram_id }}
-        {% else %}
-          <a href="#">Connect telegram</a>
-      {% endif %}
-    </li>
-    <li>Count of students: {{ teacher.subscriptions.distinct.count }}</li>
-  </ul>
-  <hr>
-  <h2>Active subscriptions:</h2>
-  <a href="{% url 'school:subscription-create' %}?teacher={{ teacher.pk }}" class="btn btn-success ">New subscription</a>
-  <a href="{% url 'school:subscription-list' %}?teacher={{ teacher.pk }}" class="btn btn-secondary ">Show subscriptions history</a>
-  <table class="table">
-    <tr>
-      <th>Subscription</th>
-      <th>Teacher</th>
-      <th>Start date</th>
-      <th>End date</th>
-      <th>Lessons left</th>
-      <th>Add lesson</th>
-    </tr>
-    {% for subscription in teacher.subscriptions.all %}
-      {% if subscription.is_active %}
-        <tr>
-          <td><a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription }}</a></td>
-          <td>{{ subscription.teacher }}</td>
-          <td>{{ subscription.start_date }}</td>
-          <td>{{ subscription.end_date }}</td>
-          <td>{{ subscription.lessons_left }}</td>
-          <td><a href="{% url 'school:lesson-create' %}?subscription={{ subscription.pk }}&student={{ subscription.student.pk }}&teacher={{ teacher.pk }}" class="btn btn-success">+</a></td>
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </table>
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h1 class="mb-1">{{ teacher.full_name|default:teacher }}</h1>
+      <span class="badge badge-primary">Teacher Profile</span>
+    </div>
+    <div class="btn-group">
+      <a href="{% url 'school:teacher-update' pk=teacher.pk %}" class="btn btn-outline-success btn-sm">Edit</a>
+      <a href="{% url 'school:teacher-delete' pk=teacher.pk %}" class="btn btn-outline-danger btn-sm">Delete</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Contact Information</h5>
+          <hr>
+          <p class="mb-2"><strong>📞 Phone:</strong> {{ teacher.phone_number|default:"—" }}</p>
+          <p class="mb-2">
+            <strong>✈️ Telegram:</strong> 
+            {% if teacher.telegram_id %}
+              <span class="text-success">{{ teacher.telegram_id }}</span>
+            {% else %}
+              <a href="" class="btn btn-sm btn-outline-primary mt-1">Connect Bot</a>
+            {% endif %}
+          </p>
+          <p class="mb-0"><strong>👥 Students:</strong> {{ teacher.subscriptions.all.distinct.count }}</p>
+        </div>
+      </div>
+      
+      <div class="card shadow-sm mt-3">
+        <div class="card-body">
+          <h5 class="card-title">Description</h5>
+          <p class="text-muted small">
+            {{ teacher.description|default:"No description provided yet." }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="h5 mb-0">Active Subscriptions</h3>
+        <div>
+            <a href="{% url 'school:subscription-list' %}?teacher={{ teacher.pk }}" class="btn btn-sm btn-light">History</a>
+            <a href="{% url 'school:subscription-create' %}?teacher={{ teacher.pk }}" class="btn btn-sm btn-success">+ New</a>
+        </div>
+      </div>
+
+      <div class="list-group shadow-sm">
+        {% for subscription in teacher.subscriptions.all %}
+          {% if subscription.is_active %}
+            <div class="list-group-item">
+              <div class="d-flex w-100 justify-content-between align-items-start">
+                <div>
+                  <h6 class="mb-1 font-weight-bold">
+                    <a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription.student }}</a>
+                  </h6>
+                  <p class="mb-1 small text-muted">
+                    {{ subscription.start_date|date:"d.m.Y" }} — {{ subscription.end_date|date:"d.m.Y" }}
+                  </p>
+                </div>
+                <div class="text-right">
+                  <span class="badge badge-pill badge-info px-3 py-2 mb-2">
+                    {{ subscription.lessons_left }} left
+                  </span>
+                  <br>
+                  <a href="{% url 'school:lesson-create' %}?subscription={{ subscription.pk }}&student={{ subscription.student.pk }}&teacher={{ teacher.pk }}" 
+                     class="btn btn-sm btn-primary">
+                    + Add Lesson
+                  </a>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% empty %}
+          <div class="list-group-item text-center py-4 text-muted">
+            No active subscriptions for this teacher.
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card { border: none; border-radius: 10px; }
+  .list-group-item { border-left: none; border-right: none; border-radius: 0 !important; }
+  .list-group-item:first-child { border-top: none; }
+  .badge-info { background-color: #17a2b8; }
+</style>
 {% endblock content %}

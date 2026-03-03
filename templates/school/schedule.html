@@ -2,83 +2,135 @@
 {% load crispy_forms_filters %}
 
 {% block content %}
-  <h1>Timetable</h1>
-  <form method="GET" action="" class="mb-4">
-    <div class="form-row align-items-end">
-      <div class="col-md-2">
-        {{ filter_form.teacher|as_crispy_field }}
-      </div>
-      <div class="col-md-2">
-        {{ filter_form.student|as_crispy_field }}
-      </div>
-      <div class="col-md-2">
-        {{ filter_form.room|as_crispy_field }}
-      </div>
-      <div class="col-md-2">
-        {{ filter_form.week|as_crispy_field }}
-      </div>
+<div class="container-fluid mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+    <h1 class="h2 mb-0 text-dark">🗓️ General Timetable</h1>
+    <a href="{% url 'school:lesson-create' %}" class="btn btn-success d-flex align-items-center shadow-sm">
+      <span class="mr-1">+</span> New Lesson
+    </a>
+  </div>
 
-      <div class="col-md-2 mb-3"> <button type="submit" class="btn btn-primary">🔎</button>
-        <a href="{% url 'school:lesson-create' %}" class="btn btn-success ml-1">+</a>
-      </div>
+  <div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body p-3">
+      <form method="GET" action="">
+        <div class="form-row align-items-end">
+          <div class="col-6 col-md-2">
+            {{ filter_form.week|as_crispy_field }}
+          </div>
+          <div class="col-6 col-md-3">
+            {{ filter_form.teacher|as_crispy_field }}
+          </div>
+          <div class="col-6 col-md-3">
+            {{ filter_form.student|as_crispy_field }}
+          </div>
+          <div class="col-4 col-md-2">
+            {{ filter_form.room|as_crispy_field }}
+          </div>
+          <div class="col-2 col-md-2 mb-3">
+            <button type="submit" class="btn btn-primary btn-block shadow-sm">🔎</button>
+          </div>
+        </div>
+        {% if filter_form.non_field_errors %}
+          <div class="alert alert-warning py-1 mt-2 mb-0 small">
+            {{ filter_form.non_field_errors }}
+          </div>
+        {% endif %}
+      </form>
     </div>
-  </form>
-  <hr>
-  <table class="table table-bordered table-striped">
-    <tr>
-      {% for day in week_days %}
-        <th>
-          <p>{{ day.name }}</p>
-          <p>{{ day.date|date:"d.m.Y" }}</p>
-        </th>
-      {% endfor %}
-    </tr>
-    <tr>
-      {% for day in week_days %}
-        <td>
-          {% for lesson in day.lessons %}
-            <div class="lesson-card shadow-sm mb-4 p-3">
-              <span class="badge badge-info">{{ lesson.start_datetime.time|time:'H:i' }}</span>
-              <span class="lesson-duration">{{ lesson.subscription.plan.lessons_duration }} min</span>
-              <br>
-              <span>
-                <strong>T:</strong> 
-                <a href={% url 'school:teacher-detail' pk=lesson.teacher.pk %}>
-                  {{ lesson.teacher.first_name|slice:":1" }}. {{ lesson.teacher.last_name }}
-                </a>
-              </span>
-              <br>
-              <span>
-                <strong>S:</strong> 
-                <a href="{% url 'school:student-detail' pk=lesson.student.pk %}">
-                  {{ lesson.student.first_name|slice:":1" }}. {{ lesson.student.last_name }}
-                </a>
-              </span>
-              <br>
-              <span>
-                <strong>Room:</strong> 
-                <a href="">
-                  {{ lesson.room }}
-                </a>
-              </span>
-              <br>
-              <span>
-                <strong>Status:</strong> {{ lesson.status }}
-              </span>
-              <hr>
-              <div class="text-center">
-                <a href="{% url 'school:lesson-update' pk=lesson.pk %}">
-                  Details...
-                </a>
-              </div>
-            </div>
-            {% empty %}
-              <p>
-                No lessons
-              </p>
+  </div>
+
+  <div class="table-responsive shadow-sm rounded border">
+    <table class="table table-bordered mb-0 bg-white" style="min-width: 1000px; table-layout: fixed;">
+      <thead class="thead-dark text-center">
+        <tr>
+          {% for day in week_days %}
+            <th class="py-3 px-1 {% if day.date|date:'Y-m-d' == today|date:'Y-m-d' %}bg-primary{% endif %}" style="width: 14.28%;">
+              <div class="text-uppercase small opacity-75">{{ day.name }}</div>
+              <div class="h5 mb-0">{{ day.date|date:"d.m" }}</div>
+            </th>
           {% endfor %}
-        </td>
-      {% endfor %}
-    </tr>
-  </table>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="bg-light">
+          {% for day in week_days %}
+            <td class="p-2 align-top timetable-column">
+              {% for lesson in day.lessons %}
+                <div class="lesson-box shadow-sm mb-3 border-left-indicator 
+                  {% if lesson.status == 'Cancelled' %}status-cancelled{% elif lesson.status == 'Completed' %}status-completed{% else %}status-planned{% endif %}">
+                  
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="badge badge-dark p-1">{{ lesson.start_datetime.time|time:'H:i' }}</span>
+                    <small class="text-muted">{{ lesson.subscription.plan.lessons_duration }}m</small>
+                  </div>
+                  
+                  <div class="lesson-info">
+                    <div class="mb-1">
+                      <strong class="text-muted small text-uppercase">T:</strong> 
+                      <a href="{% url 'school:teacher-detail' pk=lesson.teacher.pk %}" class="text-dark font-weight-bold">
+                        {{ lesson.teacher.last_name }} {{ lesson.teacher.first_name|slice:":1" }}.
+                      </a>
+                    </div>
+                    
+                    <div class="mb-1">
+                      <strong class="text-muted small text-uppercase">S:</strong> 
+                      <a href="{% url 'school:student-detail' pk=lesson.student.pk %}" class="text-info">
+                        {{ lesson.student.last_name }} {{ lesson.student.first_name|slice:":1" }}.
+                      </a>
+                    </div>
+
+                    <div class="mb-1 small">
+                      <span class="text-muted">📍</span> {{ lesson.room }}
+                    </div>
+                  </div>
+
+                  <div class="mt-2 pt-2 border-top d-flex justify-content-between align-items-center">
+                    <span class="status-label small">{{ lesson.status }}</span>
+                    <a href="{% url 'school:lesson-update' pk=lesson.pk %}" class="btn btn-link btn-sm p-0 text-primary">Edit</a>
+                  </div>
+                </div>
+              {% empty %}
+                <div class="text-center py-5 text-muted opacity-50 small">
+                  No lessons
+                </div>
+              {% endfor %}
+            </td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .timetable-column { min-height: 600px; border-right: 1px solid #dee2e6 !important; }
+  
+  .lesson-box {
+    background: #fff;
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid #eee;
+    font-size: 0.82rem;
+    transition: transform 0.1s ease;
+  }
+  
+  .lesson-box:hover {
+    transform: translateY(-2px);
+    z-index: 10;
+  }
+
+  .border-left-indicator { border-left: 4px solid #ccc !important; }
+  .status-planned { border-left-color: #007bff !important; }
+  .status-completed { border-left-color: #28a745 !important; opacity: 0.85; }
+  .status-cancelled { border-left-color: #dc3545 !important; opacity: 0.7; }
+
+  .status-label { font-size: 0.7rem; font-weight: bold; text-transform: uppercase; color: #6c757d; }
+  
+  .table-responsive { border-radius: 8px; overflow: hidden; }
+  .thead-dark th { border: none !important; }
+
+
+  .form-group { margin-bottom: 0.5rem !important; }
+  .form-group label { font-size: 0.75rem; text-transform: uppercase; color: #495057; }
+</style>
 {% endblock content %}

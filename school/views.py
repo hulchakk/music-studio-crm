@@ -529,16 +529,16 @@ class LessonDeleteView(
         )
 
     def form_valid(self, form):
-            lesson = self.get_object()
-            subscription = lesson.subscription
+        lesson = self.get_object()
+        subscription = lesson.subscription
 
-            subscription.lessons_left += 1
-            if not subscription.is_active:
-                subscription.is_active = True
+        subscription.lessons_left += 1
+        if not subscription.is_active:
+            subscription.is_active = True
 
-            subscription.save()
+        subscription.save()
 
-            return super().form_valid(form)
+        return super().form_valid(form)
 
 
 class MyProfileView(

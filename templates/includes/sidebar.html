@@ -1,24 +1,104 @@
-<ul class="sidebar-nav list-group mt-4">
   {% if user.is_authenticated %}
-    <li class="list-group-item">User: {{ user.get_username }}</li>
-    <li class="list-group-item">
-      <form action="{% url 'logout' %}" method="POST">
+    <div class="user-profile mb-4 text-center">
+      <div class="avatar bg-primary text-white mx-auto mb-2">
+        {{ user.username|slice:":1"|upper }}
+      </div>
+      <div class="font-weight-bold text-dark">{{ user.get_username }}</div>
+      <small class="text-muted">{% if user.is_superuser %}Administrator{% else %}Teacher{% endif %}</small>
+      
+      <form action="{% url 'logout' %}" method="POST" class="mt-3">
         {% csrf_token %}
-        <input type="submit" value="Logout" class="btn btn-secondary">
+        <button type="submit" class="btn btn-sm btn-outline-danger btn-block rounded-pill">Logout</button>
       </form>
-    </li>
+    </div>
   {% else %}
-    <li class="list-group-item"><a class="btn btn-primary" href="{% url 'login' %}">Login</a></li>
+    <div class="mb-4">
+      <a class="btn btn-primary btn-block rounded-pill shadow-sm" href="{% url 'login' %}">Login</a>
+    </div>
   {% endif %}
-<br>
-  <li class="list-group-item"><a href="{% url 'school:index' %}">Home</a></li>
-  <li class="list-group-item"><a href="{% url 'school:profile' pk=user.pk %}">My profile</a></li>
-  <li class="list-group-item"><a href="{% url 'school:profile-schedule' pk=user.pk %}">My schedule</a></li>
-<br>
-  {% if  user.is_superuser %}
-    <li class="list-group-item"><a href="{% url 'school:student-list' %}">All students</a></li>
-    <li class="list-group-item"><a href="{% url 'school:teacher-list' %}">All teachers</a></li>
-    <li class="list-group-item"><a href="{% url 'school:plan-list' %}">All plans</a></li>
-    <li class="list-group-item"><a href="{% url 'school:schedule' %}">Timetable</a></li>
-  {% endif %}
-</ul>
+
+  <hr>
+
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+      <a href="{% url 'school:index' %}" class="nav-link text-dark d-flex align-items-center mb-1">
+        <span class="mr-2">🏠</span> Home
+      </a>
+    </li>
+    
+    {% if user.is_authenticated %}
+    <li>
+      <a href="{% url 'school:profile' pk=user.pk %}" class="nav-link text-dark d-flex align-items-center mb-1">
+        <span class="mr-2">👤</span> My Profile
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'school:profile-schedule' pk=user.pk %}" class="nav-link text-dark d-flex align-items-center mb-1">
+        <span class="mr-2">📅</span> My Schedule
+      </a>
+    </li>
+    {% endif %}
+
+    {% if user.is_superuser %}
+      <li class="mt-4 mb-2 px-3">
+        <small class="text-uppercase font-weight-bold text-muted" style="letter-spacing: 1px; font-size: 0.7rem;">Management</small>
+      </li>
+      <li>
+        <a href="{% url 'school:student-list' %}" class="nav-link text-dark d-flex align-items-center mb-1">
+          <span class="mr-2">🎓</span> Students
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'school:teacher-list' %}" class="nav-link text-dark d-flex align-items-center mb-1">
+          <span class="mr-2">🎻</span> Teachers
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'school:plan-list' %}" class="nav-link text-dark d-flex align-items-center mb-1">
+          <span class="mr-2">💎</span> Plans
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'school:schedule' %}" class="nav-link text-dark d-flex align-items-center mb-1">
+          <span class="mr-2">🗓️</span> General Timetable
+        </a>
+      </li>
+    {% endif %}
+  </ul>
+
+<style>
+
+  .nav-link {
+    transition: all 0.2s;
+    border-radius: 8px;
+    padding: 10px 15px;
+  }
+
+  .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #007bff !important;
+    transform: translateX(5px);
+  }
+
+  .nav-link span {
+    font-size: 1.2rem;
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+  }
+
+  .nav-link.active {
+    background-color: #e7f1ff;
+    color: #007bff !important;
+    font-weight: bold;
+  }
+</style>

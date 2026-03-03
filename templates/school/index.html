@@ -1,10 +1,89 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>School home page</h1>
-  <ul>
-      <li>Teachers: {{ teachers_count }}</li>
-      <li>Students: {{ students_count }}</li>
-      <li>Lessons: {{ lessons_count }}</li>
-  </ul>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 class="display-4 font-weight-bold text-primary">Welcome to Music Studio CRM</h1>
+            <p class="lead text-muted">Building the future of music, one lesson at a time. 🎹</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h2 class="display-4 font-weight-bold mb-0">{{ teachers_count }}</h2>
+                    <p class="text-uppercase mb-0" style="letter-spacing: 2px;">Inspirational Teachers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm bg-success text-white h-100">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h2 class="display-4 font-weight-bold mb-0">{{ students_count }}</h2>
+                    <p class="text-uppercase mb-0" style="letter-spacing: 2px;">Growing Talents</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card border-0 shadow-sm bg-info text-white h-100">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h2 class="display-4 font-weight-bold mb-0">{{ lessons_count }}</h2>
+                    <p class="text-uppercase mb-0" style="letter-spacing: 2px;">Lessons Completed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm h-100 p-4 bg-light">
+                <h3 class="h4 text-dark mb-3">Daily Inspiration 💡</h3>
+                <blockquote class="blockquote mb-0">
+                    <p id="quote" class="font-italic text-secondary">"Music can change the world because it can change people."</p>
+                    <footer class="blockquote-footer">Bono</footer>
+                </blockquote>
+            </div>
+        </div>
+        
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="font-weight-bold mb-3">Quick Actions</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'school:lesson-create' %}" class="btn btn-primary btn-block mb-2 py-2">📅 Schedule Lesson</a>
+                        <a href="{% url 'school:student-create' %}" class="btn btn-outline-success btn-block py-2">👤 Add New Student</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .display-4 {
+        font-size: 3.5rem;
+    }
+    .bg-primary { background: linear-gradient(45deg, #4e73df, #224abe) !important; }
+    .bg-success { background: linear-gradient(45deg, #1cc88a, #13855c) !important; }
+    .bg-info { background: linear-gradient(45deg, #36b9cc, #258391) !important; }
+</style>
+
+<script>
+    const quotes = [
+        "Music can change the world because it can change people.",
+        "Where words fail, music speaks.",
+        "Teaching music is not my main purpose. I want to make good citizens.",
+        "To teach is to learn twice."
+    ];
+    document.getElementById('quote').innerText = '"' + quotes[Math.floor(Math.random() * quotes.length)] + '"';
+</script>
 {% endblock content %}
