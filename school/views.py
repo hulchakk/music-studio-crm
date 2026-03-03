@@ -31,6 +31,7 @@ from school.models import (
     Student,
     Lesson,
 )
+from school.telegram_utils import send_telegram_msg
 
 
 @login_required
@@ -537,6 +538,16 @@ class LessonDeleteView(
             subscription.is_active = True
 
         subscription.save()
+
+        if lesson.teacher.telegram_id:
+            text = (
+                f"❌ **Lesson Cancelled**\n\n"
+                f"👤 Student: {lesson.student}\n"
+                f"📅 Date: {lesson.start_datetime.strftime('%d/%m/%Y')}\n"
+                f"⏰ Time: {lesson.start_datetime.strftime('%H:%M')}\n\n"
+                f"Please update your schedule accordingly."
+            )
+            send_telegram_msg(lesson.teacher.telegram_id, text)
 
         return super().form_valid(form)
 
