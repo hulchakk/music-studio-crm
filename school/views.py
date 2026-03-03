@@ -6,6 +6,9 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.db.models import Value, CharField
 from django.db.models.functions import Concat
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from school.forms import (
     LessonForm,
@@ -19,6 +22,7 @@ from school.forms import (
     TeacherSearchForm,
     SubsciptionFilterForm,
     ScheduleFilterForm,
+    MyScheduleFilterForm,
 )
 from school.models import (
     Subscription,
@@ -29,6 +33,7 @@ from school.models import (
 )
 
 
+@login_required
 def index(request: HttpRequest) -> HttpResponse:
     teachers_count = Teacher.objects.count()
     students_count = Student.objects.count()
@@ -42,7 +47,10 @@ def index(request: HttpRequest) -> HttpResponse:
     return render(request, "school/index.html", context=context)
 
 
-def timetable(request: HttpRequest) -> HttpResponse:
+@login_required
+def schedule(request: HttpRequest) -> HttpResponse:
+    if not request.user.is_superuser:
+        raise PermissionDenied
     today = datetime.date.today()
     form_data = request.GET.copy()
     queryset = None
@@ -103,7 +111,11 @@ def timetable(request: HttpRequest) -> HttpResponse:
     return render(request, "school/schedule.html", context=context)
 
 
-class StudentListView(generic.ListView):
+class StudentListView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.ListView
+):
     model = Student
     paginate_by = 10
 
@@ -134,29 +146,64 @@ class StudentListView(generic.ListView):
 
         return queryset
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class StudentDetailView(generic.DetailView):
+
+class StudentDetailView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DetailView
+):
     model = Student
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class StudentCreateView(generic.CreateView):
+
+class StudentCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = Student
     form_class = StudentForm
     success_url = reverse_lazy("school:student-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class StudentUpdateView(generic.UpdateView):
+
+class StudentUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Student
     form_class = StudentForm
     success_url = reverse_lazy("school:student-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class StudentDeleteView(generic.DeleteView):
+
+class StudentDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = Student
     success_url = reverse_lazy("school:student-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class TeacherListView(generic.ListView):
+
+class TeacherListView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.ListView
+):
     model = Teacher
     paginate_by = 10
 
@@ -187,55 +234,125 @@ class TeacherListView(generic.ListView):
 
         return queryset
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class TeacherDetailView(generic.DetailView):
+
+class TeacherDetailView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DetailView
+):
     model = Teacher
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class TeacherCreateView(generic.CreateView):
+
+class TeacherCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = Teacher
     form_class = TeacherCreationForm
     success_url = reverse_lazy("school:teacher-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class TeacherUpdateView(generic.UpdateView):
+
+class TeacherUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Teacher
     form_class = TeacherUpdateForm
     success_url = reverse_lazy("school:teacher-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class TeacherDeleteView(generic.DeleteView):
+
+class TeacherDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = Teacher
     success_url = reverse_lazy("school:teacher-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionPlanListView(generic.ListView):
+
+class SubscriptionPlanListView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.ListView
+):
     model = SubscriptionPlan
     paginate_by = 10
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionPlanDetailView(generic.DetailView):
+
+class SubscriptionPlanDetailView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DetailView
+):
     model = SubscriptionPlan
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionPlanCreateView(generic.CreateView):
+
+class SubscriptionPlanCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = SubscriptionPlan
     form_class = SubscriptionPlanForm
     success_url = reverse_lazy("school:plan-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionPlanUpdateView(generic.UpdateView):
+
+class SubscriptionPlanUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = SubscriptionPlan
     form_class = SubscriptionPlanForm
     success_url = reverse_lazy("school:plan-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionPlabDeleteView(generic.DeleteView):
+
+class SubscriptionPlabDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = SubscriptionPlan
     success_url = reverse_lazy("school:plan-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionsListView(generic.ListView):
+
+class SubscriptionsListView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.ListView
+):
     model = Subscription
     paginate_by = 10
 
@@ -276,8 +393,15 @@ class SubscriptionsListView(generic.ListView):
 
         return queryset
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionCreateView(generic.CreateView):
+
+class SubscriptionCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = Subscription
     form_class = SubscriptionCreationForm
     success_url = reverse_lazy("school:student-list")
@@ -326,25 +450,55 @@ class SubscriptionCreateView(generic.CreateView):
 
         return response
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionUpdateView(generic.UpdateView):
+
+class SubscriptionUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Subscription
     form_class = SubscriptionUpdateForm
     success_url = reverse_lazy("school:student-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class SubscriptionDeleteView(generic.DeleteView):
+
+class SubscriptionDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView
+):
     model = Subscription
     success_url = reverse_lazy("school:student-list")
 
+    def test_func(self):
+        return self.request.user.is_superuser
 
-class LessonUpdateView(generic.UpdateView):
+
+class LessonUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.UpdateView
+):
     model = Lesson
     form_class = LessonForm
     success_url = reverse_lazy("school:schedule")
 
+    def test_func(self):
+        return (self.request.user.is_superuser) or (
+            self.request.user.pk == self.get_object().teacher.pk
+        )
 
-class LessonCreateView(generic.CreateView):
+
+class LessonCreateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.CreateView
+):
     model = Lesson
     form_class = LessonForm
     success_url = reverse_lazy("school:schedule")
@@ -354,3 +508,79 @@ class LessonCreateView(generic.CreateView):
         initial.update(self.request.GET.dict())
         initial["status"] = "planned"
         return initial
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class MyProfileView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DetailView
+):
+    model = Teacher
+    template_name = "school/profile.html"
+
+    def test_func(self):
+        return (
+            self.request.user.pk == self.kwargs.get("pk")
+        ) or self.request.user.is_superuser
+
+
+@login_required
+def my_schedule(request: HttpRequest, pk) -> HttpResponse:
+    if request.user.pk != pk:
+        raise PermissionDenied
+    today = datetime.date.today()
+    form_data = request.GET.copy()
+    queryset = Lesson.objects.filter(
+            teacher_id=pk
+        )
+    week = form_data.get("week")
+    if not week:
+        year, week_num, _ = today.isocalendar()
+        form_data["week"] = f"{year}-W{week_num:02d}"
+        week = form_data["week"]
+
+    filter_form = MyScheduleFilterForm(
+        data=form_data,
+    )
+
+    if filter_form.is_valid():
+        filters = filter_form.cleaned_data
+        student = filters.get("student")
+        room = filters.get("room")
+        if student:
+            queryset = queryset.filter(
+                student_id=student,
+            )
+        if room:
+            queryset = queryset.filter(
+                room_id=room,
+            )
+
+    week_start_date = datetime.datetime.strptime(
+        week + "-1",
+        "%G-W%V-%u"
+    ).date()
+    context = {
+        "filter_form": filter_form,
+        "week_days": [],
+    }
+    for week_day in range(7):
+        day_date = week_start_date + datetime.timedelta(days=week_day)
+        if queryset:
+            day_lessons = queryset.filter(
+                        start_datetime__date=day_date,
+            )
+        else:
+            day_lessons = []
+        context["week_days"].append(
+            {
+                "name": day_date.strftime("%A"),
+                "date": day_date,
+                "lessons": day_lessons,
+            },
+        )
+
+    return render(request, "school/my_schedule.html", context=context)

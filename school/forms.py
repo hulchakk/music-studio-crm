@@ -206,7 +206,7 @@ class LessonForm(forms.ModelForm):
         )
     )
     subscription = forms.ModelChoiceField(
-        queryset=Subscription.objects.filter(is_active=True),
+        queryset=Subscription.objects.all(),
         required=False,
     )
 
@@ -221,3 +221,33 @@ class LessonForm(forms.ModelForm):
             "status",
             "notes"
         )
+
+
+class MyScheduleFilterForm(forms.Form):
+    student = forms.ModelChoiceField(
+        queryset=Student.objects.all(),
+        required=False,
+    )
+    room = forms.ModelChoiceField(
+        queryset=Room.objects.all(),
+        required=False,
+    )
+    week = forms.CharField(
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "type": "week",
+                "class": "form-control"
+            }
+        ),
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        data_to_check = cleaned_data.copy()
+        data_to_check.pop("week", None)
+
+        if not any(data_to_check.values()):
+            raise forms.ValidationError("No choises")
+
+        return cleaned_data

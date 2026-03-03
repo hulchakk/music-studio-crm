@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ teacher }}</h1>
+  <ul>
+    <li>Phone number: {{ teacher.phone_number }}</li>
+    <li>Telegram id: 
+      {% if teacher.telegram_id %}
+          {{ teacher.telegram_id }}
+        {% else %}
+          <a href="#">Connect telegram</a>
+      {% endif %}
+    </li>
+    <li>Count of students: {{ teacher.subscriptions.distinct.count }}</li>
+  </ul>
+  <a href="{% url 'school:profile-schedule' pk=user.pk %}" class="btn btn-primary">My schedule</a>
+  <hr>
+  <h2>Active subscriptions:</h2>
+  <table class="table">
+    <tr>
+      <th>Subscription</th>
+      <th>Teacher</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Lessons left</th>
+    </tr>
+    {% for subscription in teacher.subscriptions.all %}
+      {% if subscription.is_active %}
+        <tr>
+          <td><a href="{% url 'school:subscription-update' pk=subscription.pk %}">{{ subscription }}</a></td>
+          <td>{{ subscription.teacher }}</td>
+          <td>{{ subscription.start_date }}</td>
+          <td>{{ subscription.end_date }}</td>
+          <td>{{ subscription.lessons_left }}</td>
+        </tr>
+      {% endif %}
+    {% endfor %}
+  </table>
+{% endblock content %}

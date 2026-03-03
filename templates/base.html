@@ -14,11 +14,13 @@
 <body>
   <div class="container-fluid">
     <div class="row">
-      <div class="sidebar col-sm-2">
-          {% block sidebar %}
-            {% include "includes/sidebar.html" %}
-          {% endblock sidebar %}
-      </div>
+      {% if user.is_authenticated %}
+        <div class="sidebar col-sm-2">
+            {% block sidebar %}
+              {% include "includes/sidebar.html" %}
+            {% endblock sidebar %}
+        </div>
+      {% endif %}
       <div class="content col-sm-10 mt-4" >
           {% block content %}
 

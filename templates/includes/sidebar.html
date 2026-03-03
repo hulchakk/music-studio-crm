@@ -1,6 +1,6 @@
 <ul class="sidebar-nav list-group mt-4">
   {% if user.is_authenticated %}
-    <li class="list-group-item">User: <a href="{% url "school:teacher-detail" pk=user.pk %}">{{ user.get_username }}</a></li>
+    <li class="list-group-item">User: {{ user.get_username }}</li>
     <li class="list-group-item">
       <form action="{% url 'logout' %}" method="POST">
         {% csrf_token %}
@@ -12,8 +12,13 @@
   {% endif %}
 <br>
   <li class="list-group-item"><a href="{% url 'school:index' %}">Home</a></li>
-  <li class="list-group-item"><a href="{% url 'school:student-list' %}">All students</a></li>
-  <li class="list-group-item"><a href="{% url 'school:teacher-list' %}">All teachers</a></li>
-  <li class="list-group-item"><a href="{% url 'school:plan-list' %}">All plans</a></li>
-  <li class="list-group-item"><a href="{% url 'school:schedule' %}">Timetable</a></li>
+  <li class="list-group-item"><a href="{% url 'school:profile' pk=user.pk %}">My profile</a></li>
+  <li class="list-group-item"><a href="{% url 'school:profile-schedule' pk=user.pk %}">My schedule</a></li>
+<br>
+  {% if  user.is_superuser %}
+    <li class="list-group-item"><a href="{% url 'school:student-list' %}">All students</a></li>
+    <li class="list-group-item"><a href="{% url 'school:teacher-list' %}">All teachers</a></li>
+    <li class="list-group-item"><a href="{% url 'school:plan-list' %}">All plans</a></li>
+    <li class="list-group-item"><a href="{% url 'school:schedule' %}">Timetable</a></li>
+  {% endif %}
 </ul>

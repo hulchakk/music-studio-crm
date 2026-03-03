@@ -127,6 +127,8 @@ STATICFILES_DIRS =(
 
 AUTH_USER_MODEL = "school.Teacher"
 
+LOGIN_URL = "/login/"
+
 LOGIN_REDIRECT_URL = "/"
 
 LOGOUT_REDIRECT_URL = '/'

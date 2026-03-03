@@ -2,7 +2,8 @@ from django.urls import path
 
 from school.views import (
     index,
-    timetable,
+    schedule,
+    my_schedule,
     StudentListView,
     StudentDetailView,
     StudentCreateView,
@@ -24,6 +25,7 @@ from school.views import (
     SubscriptionDeleteView,
     LessonUpdateView,
     LessonCreateView,
+    MyProfileView,
 )
 
 
@@ -114,7 +116,7 @@ urlpatterns = [
     ),
     path(
         "schedule/",
-        timetable,
+        schedule,
         name="schedule"
     ),
     path(
@@ -127,6 +129,16 @@ urlpatterns = [
         LessonUpdateView.as_view(),
         name="lesson-update"
     ),
+    path(
+        "profiles/<int:pk>/",
+        MyProfileView.as_view(),
+        name="profile"
+    ),
+    path(
+        "profiles/<int:pk>/schedule/",
+        my_schedule,
+        name="profile-schedule"
+    )
 ]
 
 app_name = "school"
