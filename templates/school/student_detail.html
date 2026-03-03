@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+{% load lessons_tags %}
 
 {% block content %}
   <h1>{{ student }}</h1>
   <a href="{% url 'school:student-update' pk=student.pk %}" class="btn btn-success">Edit</a>
   <a href="{% url 'school:student-delete' pk=student.pk %}" class="btn btn-danger">Delete</a>
+  <h3>Planned lessons: {{ student.lessons|count_planned }}</h3>
   <h2>Description:</h2>
   <p>
     {% if student.description %}

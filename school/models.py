@@ -4,6 +4,8 @@ from django.db.models import Q, UniqueConstraint
 from django.contrib.auth.models import AbstractUser
 from django.forms import ValidationError
 
+from school.telegram_utils import send_telegram_msg
+
 
 class Teacher(AbstractUser):
     telegram_id = models.CharField(
@@ -103,6 +105,18 @@ class Subscription(models.Model):
             )
         if self.lessons_left is None:
             self.lessons_left = self.plan.lessons_count
+
+        if not self.pk:
+            if self.teacher.telegram_id:
+                text = (
+                    f"🎉 <b>New Subscription!</b>\n\n"
+                    f"👤 <b>Student:</b> {self.student}\n"
+                    f"🎹 <b>Lessons:</b> {self.lessons_left}\n"
+                    f"📅 <b>Expires:</b> {self.end_date.strftime('%d.%m.%Y') if self.end_date else 'No limit'}\n\n"
+                    f"<i>Time to schedule some music!</i> 🎶"
+                )
+                send_telegram_msg(self.teacher.telegram_id, text)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -183,7 +197,16 @@ class Lesson(models.Model):
                 if self.subscription.lessons_left == 0:
                     self.subscription.is_active = False
                 self.subscription.save()
-
+        else:
+            if self.teacher.telegram_id:
+                text = (
+                    f"<b>Lesson Updated!</b>\n\n"
+                    f"Student: <b>{self.student}</b>\n"
+                    f"📅 <b>New Time:</b> {self.start_datetime.strftime('%d.%m (%a) %H:%M')}\n"
+                    f"📍 <b>Room:</b> {self.room}\n"
+                    f"<i>Please check your schedule for any conflicts.</i>"
+                )
+                send_telegram_msg(self.teacher.telegram_id, text)
         super().save(*args, **kwargs)
 
     def __str__(self):
