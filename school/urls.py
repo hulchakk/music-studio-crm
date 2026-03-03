@@ -1,0 +1,150 @@
+from django.urls import path
+
+from school.views import (
+    index,
+    schedule,
+    my_schedule,
+    StudentListView,
+    StudentDetailView,
+    StudentCreateView,
+    StudentUpdateView,
+    StudentDeleteView,
+    TeacherListView,
+    TeacherDetailView,
+    TeacherCreateView,
+    TeacherUpdateView,
+    TeacherDeleteView,
+    SubscriptionPlanListView,
+    SubscriptionPlanDetailView,
+    SubscriptionPlanCreateView,
+    SubscriptionPlanUpdateView,
+    SubscriptionPlabDeleteView,
+    SubscriptionsListView,
+    SubscriptionCreateView,
+    SubscriptionUpdateView,
+    SubscriptionDeleteView,
+    LessonUpdateView,
+    LessonCreateView,
+    LessonDeleteView,
+    MyProfileView,
+)
+
+
+urlpatterns = [
+    path("", index, name="index"),
+    path("students/", StudentListView.as_view(), name="student-list"),
+    path(
+        "students/<int:pk>/",
+        StudentDetailView.as_view(),
+        name="student-detail"
+    ),
+    path(
+        "students/create/",
+        StudentCreateView.as_view(),
+        name="student-create"
+    ),
+    path(
+        "students/<int:pk>/update/",
+        StudentUpdateView.as_view(),
+        name="student-update"
+    ),
+    path(
+        "students/<int:pk>/delete/",
+        StudentDeleteView.as_view(),
+        name="student-delete"
+    ),
+    path("teachers/", TeacherListView.as_view(), name="teacher-list"),
+    path(
+        "teachers/<int:pk>/",
+        TeacherDetailView.as_view(),
+        name="teacher-detail"
+    ),
+    path(
+        "teachers/create/",
+        TeacherCreateView.as_view(),
+        name="teacher-create"
+    ),
+    path(
+        "teachers/<int:pk>/update/",
+        TeacherUpdateView.as_view(),
+        name="teacher-update"
+    ),
+    path(
+        "teachers/<int:pk>/delete/",
+        TeacherDeleteView.as_view(),
+        name="teacher-delete"
+    ),
+    path("plans/", SubscriptionPlanListView.as_view(), name="plan-list"),
+    path(
+        "plans/<int:pk>/",
+        SubscriptionPlanDetailView.as_view(),
+        name="plan-detail"
+    ),
+    path(
+        "plans/create/",
+        SubscriptionPlanCreateView.as_view(),
+        name="plan-create"
+    ),
+    path(
+        "plans/<int:pk>/update/",
+        SubscriptionPlanUpdateView.as_view(),
+        name="plan-update"
+    ),
+    path(
+        "plans/<int:pk>/delete/",
+        SubscriptionPlabDeleteView.as_view(),
+        name="plan-delete"
+    ),
+    path(
+        "subscriptions/",
+        SubscriptionsListView.as_view(),
+        name="subscription-list"
+    ),
+    path(
+        "subscriptions/create/",
+        SubscriptionCreateView.as_view(),
+        name="subscription-create"
+    ),
+    path(
+        "subscriptions/<int:pk>/update/",
+        SubscriptionUpdateView.as_view(),
+        name="subscription-update"
+    ),
+    path(
+        "subscriptions/<int:pk>/delete/",
+        SubscriptionDeleteView.as_view(),
+        name="subscription-delete"
+    ),
+    path(
+        "schedule/",
+        schedule,
+        name="schedule"
+    ),
+    path(
+        "lessons/create/",
+        LessonCreateView.as_view(),
+        name="lesson-create"
+    ),
+    path(
+        "lessons/<int:pk>/update/",
+        LessonUpdateView.as_view(),
+        name="lesson-update"
+    ),
+    path(
+        "lessons/<int:pk>/delete/",
+        LessonDeleteView.as_view(),
+        name="lesson-delete"
+    ),
+    path(
+        "profiles/<int:pk>/",
+        MyProfileView.as_view(),
+        name="profile"
+    ),
+    path(
+        "profiles/<int:pk>/schedule/",
+        my_schedule,
+        name="profile-schedule"
+    )
+]
+
+app_name = "school"

@@ -1,0 +1,72 @@
+{% load query_transform %}
+
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-4 mb-5">
+  <ul class="pagination justify-content-center">
+    
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a href="?{% query_transform request page=page_obj.previous_page_number %}" class="page-link shadow-sm px-3 py-2">
+          <span aria-hidden="true">«</span> <span class="d-none d-sm-inline">Prev</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link shadow-sm px-3 py-2 text-muted">«</span>
+      </li>
+    {% endif %}
+
+    <li class="page-item active mx-2">
+      <span class="page-link shadow-sm px-4 py-2 border-primary font-weight-bold">
+        {{ page_obj.number }} <small class="opacity-75 font-weight-normal">of</small> {{ paginator.num_pages }}
+      </span>
+    </li>
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a href="?{% query_transform request page=page_obj.next_page_number %}" class="page-link shadow-sm px-3 py-2">
+          <span class="d-none d-sm-inline">Next</span> <span aria-hidden="true">»</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link shadow-sm px-3 py-2 text-muted">»</span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
+{% endif %}
+
+<style>
+  .pagination .page-link {
+    border-radius: 8px !important;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    transition: all 0.2s ease;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    z-index: 3;
+  }
+
+  .pagination .page-link:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+  }
+
+  .pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    opacity: 0.6;
+  }
+  
+  @media (max-width: 576px) {
+    .pagination .page-link {
+      padding: 10px 15px !important;
+    }
+  }
+</style>

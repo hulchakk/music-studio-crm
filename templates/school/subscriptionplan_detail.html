@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent p-0 mb-2">
+          <li class="breadcrumb-item"><a href="{% url 'school:plan-list' %}">Plans</a></li>
+          <li class="breadcrumb-item active">{{ subscriptionplan.name }}</li>
+        </ol>
+      </nav>
+      <h1 class="display-5 font-weight-bold">{{ subscriptionplan.name }}</h1>
+    </div>
+    <div class="btn-group shadow-sm">
+      <a href="{% url 'school:plan-update' pk=subscriptionplan.pk %}" class="btn btn-outline-success btn-sm px-3">Edit</a>
+      <a href="{% url 'school:plan-delete' pk=subscriptionplan.pk %}" class="btn btn-outline-danger btn-sm px-3">Delete</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm mb-4 bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="row text-center">
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+              <div class="h3 font-weight-bold mb-0">{{ subscriptionplan.lessons_count }}</div>
+              <small class="text-uppercase opacity-75" style="font-size: 0.7rem;">Lessons</small>
+            </div>
+            <div class="col-6 col-md-3 mb-3 mb-md-0">
+              <div class="h3 font-weight-bold mb-0">{{ subscriptionplan.lessons_duration }}'</div>
+              <small class="text-uppercase opacity-75" style="font-size: 0.7rem;">Duration</small>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="h3 font-weight-bold mb-0">{{ subscriptionplan.price }}</div>
+              <small class="text-uppercase opacity-75" style="font-size: 0.7rem;">Price (UAH)</small>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="h3 font-weight-bold mb-0">{{ subscriptionplan.validity_days }}</div>
+              <small class="text-uppercase opacity-75" style="font-size: 0.7rem;">Validity Days</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h5 class="font-weight-bold mb-3">Plan Details</h5>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <span class="text-muted">Standard Lesson Length</span>
+              <span class="font-weight-bold">{{ subscriptionplan.lessons_duration }} minutes</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <span class="text-muted">Total Lessons in Package</span>
+              <span class="font-weight-bold">{{ subscriptionplan.lessons_count }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <span class="text-muted">Price per Lesson</span>
+              <span class="font-weight-bold text-success">
+                {% if subscriptionplan.lessons_count > 0 %}
+                  {% widthratio subscriptionplan.price subscriptionplan.lessons_count 1 %} UAH
+                {% else %}
+                  —
+                {% endif %}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm text-center p-4">
+        <div class="h1 mb-0 text-primary font-weight-bold">{{ subscriptionplan.subscriptions.count }}</div>
+        <p class="text-muted text-uppercase small mb-3">Active Subscriptions</p>
+        <hr>
+        <p class="small text-muted mb-0 font-italic">
+          This plan is currently used by {{ subscriptionplan.subscriptions.count }} students.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card { border-radius: 15px; }
+  .opacity-75 { opacity: 0.75; }
+  .breadcrumb-item + .breadcrumb-item::before { content: "›"; }
+  .bg-primary { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%) !important; }
+</style>
+{% endblock content %}

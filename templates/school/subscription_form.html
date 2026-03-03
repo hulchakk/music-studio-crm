@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+      
+      <div class="d-flex align-items-center mb-4">
+        <button type="button" class="btn btn-link text-muted p-0 mr-3" onclick="history.back()">
+          ← Back
+        </button>
+        <h1 class="h3 mb-0">{{ object|yesno:"⚙️ Edit Subscription,💎 New Subscription" }}</h1>
+      </div>
+
+      <div class="card shadow-sm border-0 overflow-hidden">
+        <div class="card-body p-4 p-md-5">
+          <form method="POST" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-section mb-5">
+              <h5 class="text-primary border-bottom pb-2 mb-4">📍 General Information</h5>
+              <div class="form-row">
+                <div class="col-md-6">
+                  {{ form.student|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                  {{ form.teacher|as_crispy_field }}
+                </div>
+              </div>
+              
+              <div class="form-row">
+                {% if form.plan %}
+                <div class="col-md-6">
+                  {{ form.plan|as_crispy_field }}
+                </div>
+                {% endif %}
+                <div class="col-md-3">
+                  {{ form.start_date|as_crispy_field }}
+                </div>
+                {% if form.end_date %}
+                <div class="col-md-3">
+                  {{ form.end_date|as_crispy_field }}
+                </div>
+                {% endif %}
+                {% if form.lessons_left %}
+                <div class="col-md-3">
+                  {{ form.lessons_left|as_crispy_field }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            {% if form.room or form.time_0 %}
+            <div class="form-section mb-4 p-4 bg-light rounded-lg border">
+              <h5 class="text-dark mb-1">🕒 Weekly Schedule Setup</h5>
+              <p class="text-muted small mb-4">Fill in the times to automatically generate lessons for this subscription.</p>
+              
+              <div class="mb-4">
+                {{ form.room|as_crispy_field }}
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-sm table-borderless">
+                  <thead>
+                    <tr class="text-muted small text-uppercase">
+                      <th>Mon</th>
+                      <th>Tue</th>
+                      <th>Wed</th>
+                      <th>Thu</th>
+                      <th>Fri</th>
+                      <th class="text-primary">Sat</th>
+                      <th class="text-primary">Sun</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{ form.time_0|as_crispy_field }}</td>
+                      <td>{{ form.time_1|as_crispy_field }}</td>
+                      <td>{{ form.time_2|as_crispy_field }}</td>
+                      <td>{{ form.time_3|as_crispy_field }}</td>
+                      <td>{{ form.time_4|as_crispy_field }}</td>
+                      <td>{{ form.time_5|as_crispy_field }}</td>
+                      <td>{{ form.time_6|as_crispy_field }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-light px-4" onclick="history.back()">Cancel</button>
+              <button type="submit" class="btn btn-success px-5 shadow-sm font-weight-bold">
+                {{ object|yesno:"Update Subscription,Create & Generate Schedule" }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  .table .form-group label { display: none; }
+  .table .form-group { margin-bottom: 0 !important; }
+  
+  .bg-light.rounded-lg {
+    background-color: #f8f9fc !important;
+    border: 1px dashed #dee2e6 !important;
+  }
+  
+  .form-section h5 {
+    letter-spacing: 0.5px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+  }
+</style>
+{% endblock content %}

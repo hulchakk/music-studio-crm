@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+  <h1>{{ object|yesno:"Edit,Create new" }}  subscription plan</h1>
+  <form action="", method="POST">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <hr>
+      <input type="submit" class="btn btn-success" value="{{ object|yesno:"Save,Create" }}">
+      <button type="button" class="btn btn-secondary" onclick="history.back()">Cancel</button>
+  </form>
+{% endblock content %}

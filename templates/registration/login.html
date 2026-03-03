@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+  <div class="w-100" style="max-width: 400px;">
+    
+    <div class="text-center mb-4">
+      <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width: 70px; height: 70px;">
+        <span style="font-size: 2rem;">🎹</span>
+      </div>
+      <h1 class="h3 mt-3 font-weight-bold text-dark">Welcome Back</h1>
+      <p class="text-muted">Enter your credentials to access CRM</p>
+    </div>
+
+    <div class="card shadow-lg border-0" style="border-radius: 20px;">
+      <div class="card-body p-4 p-md-5">
+        <form action="{% url 'login' %}" method="POST" novalidate>
+          {% csrf_token %}
+          
+          <div class="login-form-fields">
+            {{ form|crispy }}
+          </div>
+
+          <input type="hidden" name="next" value="{{ next }}">
+          
+          <button type="submit" class="btn btn-primary btn-block btn-lg shadow-sm mt-4" style="border-radius: 12px; font-weight: 600;">
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .login-form-fields .form-group {
+    margin-bottom: 1.2rem;
+  }
+  
+  .form-control {
+    border-radius: 10px;
+    height: auto;
+    padding: 12px 15px;
+  }
+
+</style>
+{% endblock content %}
