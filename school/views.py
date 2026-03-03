@@ -510,7 +510,35 @@ class LessonCreateView(
         return initial
 
     def test_func(self):
-        return self.request.user.is_superuser
+        return (self.request.user.is_superuser) or (
+            self.request.user.pk == self.get_object().teacher.pk
+        )
+
+
+class LessonDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    generic.DeleteView,
+):
+    model = Lesson
+    success_url = reverse_lazy("school:schedule")
+
+    def test_func(self):
+        return (self.request.user.is_superuser) or (
+            self.request.user.pk == self.get_object().teacher.pk
+        )
+
+    def form_valid(self, form):
+            lesson = self.get_object()
+            subscription = lesson.subscription
+
+            subscription.lessons_left += 1
+            if not subscription.is_active:
+                subscription.is_active = True
+
+            subscription.save()
+
+            return super().form_valid(form)
 
 
 class MyProfileView(

@@ -25,6 +25,7 @@ from school.views import (
     SubscriptionDeleteView,
     LessonUpdateView,
     LessonCreateView,
+    LessonDeleteView,
     MyProfileView,
 )
 
@@ -128,6 +129,11 @@ urlpatterns = [
         "lessons/<int:pk>/update/",
         LessonUpdateView.as_view(),
         name="lesson-update"
+    ),
+    path(
+        "lessons/<int:pk>/delete/",
+        LessonDeleteView.as_view(),
+        name="lesson-delete"
     ),
     path(
         "profiles/<int:pk>/",
