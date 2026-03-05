@@ -2,6 +2,11 @@
 
 My first Django portfolio project - CRM platform designed for music school management.
 
+https://music-studio-crm.onrender.com/
+
+user: admin
+password: admin
+
 ## Features:
 
 - ### Administrative Management (Superuser):
