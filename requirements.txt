@@ -45,3 +45,4 @@ traitlets==5.14.3
 urllib3==2.6.3
 wcwidth==0.6.0
 wheel==0.46.3
+whitenoise==6.12.0

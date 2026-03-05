@@ -2,6 +2,14 @@ from music_studio_crm.settings.base import *
 
 from urllib.parse import urlparse, parse_qsl
 
+DEBUG = False
+
+ALLOWED_HOSTS = [
+    "*",
+]
+
+STATIC_ROOT = "staticfiles/"
+
 tmpPostgres = urlparse(os.getenv("DATABASE_URL"))
 
 DATABASES = {
